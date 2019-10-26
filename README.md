@@ -4,8 +4,8 @@ This project consists on a program for managing the media works in a library.
 
 ## Authors
 
-* António Romeu Pinheiro *
-* Leonor Veloso *
+* António Romeu Pinheiro
+* Leonor Veloso
 
 ## Acknowledgments
 
