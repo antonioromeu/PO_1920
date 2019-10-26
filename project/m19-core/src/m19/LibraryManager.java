@@ -1,9 +1,9 @@
 package m19;
 
-import m19.app.exceptions.MissingFileAssociationException;
-import m19.app.exceptions.BadEntrySpecificationException;
-import m19.app.exceptions.FailedToOpenFileException;
-import m19.app.exceptions.ImportFileException;
+import m19.exceptions.MissingFileAssociationException;
+import m19.exceptions.BadEntrySpecificationException;
+import m19.exceptions.FailedToOpenFileException;
+import m19.exceptions.ImportFileException;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class LibraryManager {
 
   private Library _library;  // FIXME initialize this attribute
-
+    private String _filename;
   // FIXME define other attributes
 
   // FIXME define contructor(s)

@@ -1,9 +1,21 @@
 package m19;
 
-import pt.tecnico.po.ui.Command;
-import pt.tecnico.po.ui.DialogException;
+import java.io.IOException;
+import java.io.Serializable;
+
 import m19.LibraryManager;
 
+import m19.exceptions.BadEntrySpecificationException;
+//import m19.exceptions.BadEntryException;
+//import m19.exceptions.BadTimeSpecificationException;
+//import m19.exceptions.ImportFileException;
+//import mmt.exceptions.NoSuchItineraryChoiceException;
+//import mmt.exceptions.InvalidPassengerNameException;
+//import mmt.exceptions.NoSuchDepartureException;
+//import m19.exceptions.NoSuchPassengerIdException;
+//import m19.exceptions.NoSuchServiceIdException;
+//import m19.exceptions.NoSuchStationNameException;
+//import m19.exceptions.NonUniquePassengerNameException;
 // FIXME import system types
 // FIXME import project (core) types
 
