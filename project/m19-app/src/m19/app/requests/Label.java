@@ -1,5 +1,7 @@
 package m19.app.requests;
 
+import pt.tecnico.po.ui.Command;
+
 /** Menu entries for the requests menu. */
 @SuppressWarnings("nls")
 public interface Label {

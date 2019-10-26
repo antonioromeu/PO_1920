@@ -1,5 +1,9 @@
 package m19.app.main;
 
+import m19.LibraryManager;
+import pt.tecnico.po.ui.DialogException;
+import pt.tecnico.po.ui.Command;
+
 // FIXME import core concepts
 // FIXME import ui concepts
 

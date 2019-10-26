@@ -1,4 +1,4 @@
-JAVADIR=/usr/share/java
+JAVADIR=../../po-uuilib-201708311009
 JARNAME=m19-app
 
 all:
