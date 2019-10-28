@@ -7,17 +7,9 @@ import m19.exceptions.ImportFileException;
 import java.io.IOException;
 import java.io.Serializable;
 
-
-// FIXME import system types
-// FIXME import project (core) types
-
-/**
- * The façade class.
- */
 public class LibraryManager {
-
   private Library _library;  // FIXME initialize this attribute
-    private String _filename;
+  private String _filename;
   // FIXME define other attributes
 
   // FIXME define contructor(s)
@@ -29,8 +21,10 @@ public class LibraryManager {
    * @throws IOException
    * @throws FileNotFoundException
    */
-  public void save() throws MissingFileAssociationException, IOException {
-    // FIXME implement method
+  public void save(Library library, String file) throws MissingFileAssociationException, IOException {
+    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+    out.writeObject(library);
+    out.close();
   }
 
   /**
@@ -50,7 +44,10 @@ public class LibraryManager {
    * @throws ClassNotFoundException
    */
   public void load(String filename) throws FailedToOpenFileException, IOException, ClassNotFoundException {
-    // FIXME implement method
+      ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
+  
+      Library library = (Library) in.readObject();
+      in.close();
   }
 
   /**

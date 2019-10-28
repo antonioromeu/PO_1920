@@ -2,6 +2,7 @@ package m19;
 
 import m19.LibraryManager;
 import m19.exceptions.BadEntrySpecificationException;
+import m19.exceptions.UserRegistrationException;
 //import m19.exceptions.BadEntryException;
 //import m19.exceptions.BadTimeSpecificationException;
 //import m19.exceptions.ImportFileException;
@@ -40,5 +41,15 @@ public class Library implements Serializable {
             } catch(BadEntrySpecificationException ex) {}
         }
     }
+
+    public void registerUser(int usersCounter, String name, String email) { //FIX ME with exceptions 
+        User _user = new User(usersCounter, name, email);
+        _usersList.add(_user);
+    }
+
+    public void addBook(int worksCounter, int price, Category category, String title) {
+        
+    }
+
 
 }
