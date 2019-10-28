@@ -6,25 +6,18 @@ import pt.tecnico.po.ui.Command;
 // FIXME import core concepts
 // FIXME import ui concepts
 
-/**
- * 4.2.1. Register new user.
- */
 public class DoRegisterUser extends Command<LibraryManager> {
 
-  // FIXME define input fields
+    // FIXME define input fields
 
-  /**
-   * @param receiver
-   */
-  public DoRegisterUser(LibraryManager receiver) {
-    super(Label.REGISTER_USER, receiver);
-    // FIXME initialize input fields
-  }
+    public DoRegisterUser(LibraryManager receiver) {
+        super(Label.REGISTER_USER, receiver);
+        // FIXME initialize input fields
+    }
 
-  /** @see pt.tecnico.po.ui.Command#execute() */
-  @Override
-  public final void execute() throws DialogException {
-    // FIXME implement command
-  }
+    @Override
+    public final void execute() throws DialogException {
+        // FIXME implement command
+    }
 
 }
