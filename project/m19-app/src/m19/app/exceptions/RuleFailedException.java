@@ -2,59 +2,34 @@ package m19.app.exceptions;
 
 import pt.tecnico.po.ui.DialogException;
 
-/**
- * Class encoding the failure of borrowing requests.
- */
 public class RuleFailedException extends DialogException {
 
-  /** Serial number for serialization. */
-  static final long serialVersionUID = 200510291601L;
+    static final long serialVersionUID = 200510291601L;
+    int _idUser;
+    int _idWork;
+    int _ruleIndex = -1;
 
-  /** User id. */
-  int _idUser;
+    public RuleFailedException(int idUser, int idWork, int ruleIndex) {
+        _idUser = idUser;
+        _idWork = idWork;
+        _ruleIndex = ruleIndex;
+    }
 
-  /** Work id. */
-  int _idWork;
+    public int getRuleIndex() {
+        return _ruleIndex;
+    }
 
-  /** Index of failed rule. */
-  int _ruleIndex = -1;
+    public int getWork() {
+        return _idWork;
+    }
 
-  /**
-   * @param idUser
-   * @param idWork
-   * @param ruleIndex
-   */
-  public RuleFailedException(int idUser, int idWork, int ruleIndex) {
-    _idUser = idUser;
-    _idWork = idWork;
-    _ruleIndex = ruleIndex;
-  }
+    public int getUser() {
+        return _idUser;
+    }
 
-  /**
-   * @return index of failed rule
-   */
-  public int getRuleIndex() {
-    return _ruleIndex;
-  }
-
-  /**
-   * @return work id
-   */
-  public int getWork() {
-    return _idWork;
-  }
-
-  /**
-   * @return user id
-   */
-  public int getUser() {
-    return _idUser;
-  }
-
-  /** @see pt.tecnico.po.ui.DialogException#getMessage() */
-  @Override
-  public String getMessage() {
-    return Message.ruleFailed(_idUser, _idWork, _ruleIndex);
-  }
+    @Override
+    public String getMessage() {
+        return Message.ruleFailed(_idUser, _idWork, _ruleIndex);
+    }
 
 }

@@ -1,28 +1,16 @@
 package m19.exceptions;
 
-/**
- * Class encoding file opening failure.
- */
 public class FailedToOpenFileException extends Exception {
 
-  /** Serial number for serialization. */
-  static final long serialVersionUID = 201901091828L;
+    static final long serialVersionUID = 201901091828L;
+    private String _name;
 
-  /** Bad file name. */
-  private String _name;
+    public FailedToOpenFileException(String name) {
+        _name = name;
+    }
 
-  /**
-   * @param name
-   */
-  public FailedToOpenFileException(String name) {
-    _name = name;
-  }
-
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return _name;
-  }
+    public String getName() {
+        return _name;
+    }
 
 }
