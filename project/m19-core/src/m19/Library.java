@@ -2,13 +2,13 @@ package m19;
 
 import m19.LibraryManager;
 import m19.exceptions.BadEntrySpecificationException;
-import m19.exceptions.UserRegistrationException;
-//import m19.exceptions.BadEntryException;
-//import m19.exceptions.BadTimeSpecificationException;
-//import m19.exceptions.ImportFileException;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
 
 public class Library implements Serializable {
 
@@ -23,22 +23,20 @@ public class Library implements Serializable {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
         String line;
         while ((line = br.readLine()) != null) {
-            try {
-                String[] worksParse = line.split(":", 7);
-                if (worksParse[0].equals("DVD")) {
-                    DVD dvd = new DVD(worksParse[1], worksParse[2], worksParse[3], worksParse[4], worksParse[5], worksParse[6]);
-                    _worksList.add(dvd);
-                }
-                else {
-                    Book book = new Book(worksParse[1], worksParse[2], worksParse[3], worksParse[4], worksParse[5], worksParse[6]);
-                    _worksList.add(book);
-                }
+            String[] worksParse = line.split(":", 7);
+            if (worksParse[0].equals("DVD")) {
+                DVD dvd = new DVD(Integer.parseInt(worksParse[1]), Integer.parseInt(worksParse[2]), Integer.parseInt(worksParse[3]), worksParse[4], worksParse[5], worksParse[6]);
+                _worksList.add(dvd);
             }
-            try {
-                String[] worksParse = line.split(":", 3);
-                User user = new User(worksParse[1], worksParse[2]);
+            else if (worksParse[0].equals("Book")) {
+                Book book = new Book(Integer.parseInt(worksParse[1]), Integer.parseInt(worksParse[2]), Integer.parseInt(worksParse[3]), worksParse[4], worksParse[5], worksParse[6]);
+                _worksList.add(book);
+            }
+            else {
+                String[] userParse = line.split(":", 3);
+                User user = new User(_usersCounter, userParse[1], userParse[2]);
                 _usersList.add(user);
-            } catch(BadEntrySpecificationException ex) {}
+            }
         }
     }
 

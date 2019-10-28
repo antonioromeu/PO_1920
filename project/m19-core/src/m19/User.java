@@ -9,7 +9,7 @@ public class User {
     private double _fine;
     private Behaviour _behaviour = new NormalBehaved(this);
 
-    public User(int usersCounter, String name, String emailr) {
+    public User(int usersCounter, String name, String email) {
         _id = usersCounter;
         _name = name;
         _email = email;
@@ -21,11 +21,11 @@ public class User {
         _behaviour = b;
     }
 
-    public boolean checkLast3() {
+    public void checkLast3() {
         _behaviour.checkLast3();
     }
 
-    public boolean checkLast5() {
+    public void checkLast5() {
         _behaviour.checkLast5();
     }
 

@@ -6,6 +6,7 @@ public class BadlyBehaved extends Behaviour {
         super(user);
     }
 
+    @Override
     public void checkLast3() {
         for(int i = getBehaviourListSize() - 1; i >= getBehaviourListSize() - 3; i--) {
             if (getBehaviourFromList(i) != 1) return;
@@ -13,6 +14,7 @@ public class BadlyBehaved extends Behaviour {
         _user.setBehaviour(new NormalBehaved(_user));
     }
 
+    @Override
     public void checkLast5() {
         for(int i = getBehaviourListSize() - 1; i >= getBehaviourListSize() - 5; i--) {
             if (getBehaviourFromList(i) != 1) return;

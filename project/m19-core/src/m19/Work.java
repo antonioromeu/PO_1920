@@ -8,7 +8,7 @@ public abstract class Work {
     private Category _category;
     private String _title;
 
-    public Work(int worksCounter, int copies, int price, String titler) {
+    public Work(int worksCounter, int copies, int price, String title) {
         _id = worksCounter;
         _copies = copies;
         _price = price;

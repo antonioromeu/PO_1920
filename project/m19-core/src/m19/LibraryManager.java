@@ -7,6 +7,11 @@ import m19.exceptions.ImportFileException;
 import java.io.IOException;
 import java.io.Serializable;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 public class LibraryManager {
     
     private Library _library;  // FIXME initialize this attribute
@@ -20,7 +25,7 @@ public class LibraryManager {
 
     public void saveAs(String filename) throws MissingFileAssociationException, IOException {
         _filename = filename;
-        save();
+        save(_library, filename);
     }
 
     public void load(String filename) throws FailedToOpenFileException, IOException, ClassNotFoundException {

@@ -1,27 +1,29 @@
 package m19;
 
+import java.util.ArrayList;
+
 public abstract class Behaviour {
 
     protected User _user; //FAZ SENTIDO?
-    private ArrayList<Int> _behaviourList; //1 entregou a tempo; 0 falhou entrega
+    private ArrayList<Integer> _behaviourList; //1 entregou a tempo; 0 falhou entrega
 
     public Behaviour(User user) {
         _user = user;
     }
 
     public int getBehaviourFromList(int index) {
-        return _behaviourList[index];
+        return _behaviourList.get(index);
     }
 
     public int getBehaviourListSize() {
-        return _behaviourList.length;
+        return _behaviourList.size();
     }
     
     public String status() {
         return getClass().getName();
     }
 
-    public abstract boolean checkLast3();
-    public abstract boolean checkLast5();
+    public abstract void checkLast3();
+    public abstract void checkLast5();
 
 }
