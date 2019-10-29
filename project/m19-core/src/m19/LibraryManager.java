@@ -42,4 +42,12 @@ public class LibraryManager {
         }
     }
 
+    public void advanceDate() {
+        _library.advanceDate();
+    }
+
+    public void displayDate() {
+        _library.displayDate();
+    }
+
 }

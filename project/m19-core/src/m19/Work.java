@@ -15,9 +15,19 @@ public abstract class Work {
         _title = title;
     }
 
-    /* DEPENDE DE FEEDBACK
-    setState() {}
-    public void return() {}
-    public boolean borrow() {}
-    */
+    public int getID() {
+        return _id;
+    }
+
+    public int getCopies() {
+        return _copies;
+    }
+
+    public int getPrice() {
+        return _price;
+    }
+
+    public String getTitle() {
+        return _title;
+    }
 }

@@ -17,6 +17,30 @@ public class User {
         _fine = 0;
     }
 
+    public int getID() {
+        return _id;
+    }
+
+    public String getName() {
+        return _name;
+    }
+
+    public String getEmail() {
+        return _email;
+    }
+
+    public boolean isActive() {
+        return _active;
+    }
+
+    public double getFine() {
+        return _fine;
+    }
+
+    public Behaviour getBehaviour() {
+        return _behaviour;
+    }
+
     protected void setBehaviour(Behaviour b) {
         _behaviour = b;
     }
