@@ -8,7 +8,8 @@ import m19.exceptions.MissingFileAssociationException;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
@@ -20,9 +21,16 @@ public class Library implements Serializable {
     private int _worksCounter = 0;
     private int _usersCounter = 0;
     private RuleComposite _ruleComposite;
-    private ArrayList<Work> _worksList;
-    private ArrayList<User> _usersList;
+    private Map<Integer, Work> _worksMap;
+    private Map<Integer, User> _usersMap;
+    private Map<Request> _requestsMap; //should we do treemaps? also, idea: request id = work id + user id !!
     private int _day = 0;
+
+    public Library() {
+        _worksMap = new TreeMap<Integer, Work>();
+        _usersMap = new TreeMap<Integer, User>();
+        _requestsMap = new TreeMap<Integer, Request>();
+    }
 
     void importFile(String filename) throws IOException, ImportFileException {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
@@ -67,10 +75,10 @@ public class Library implements Serializable {
         int id = getNewWorkID();
         if (fields[0].equals("BOOK")) {
             Book book = new Book(id, fields[2], fields[3], fields[4]);
-            addWork(book);
+            addBook(book);
         } else if (fields[0].equals("DVD")) {
             DVD dvd = new DVD(id, fields[2], fields[3], fields[4]);
-            addWork(dvd);
+            addDVD(dvd);
         }
     } 
 
@@ -83,15 +91,15 @@ public class Library implements Serializable {
     }
 
     public void addUser(User user) {
-        _usersList.add(user);
+        _usersMap.add(user);
     } 
 
     public void addBook(Book book) {
-        _worksList.add(book);
+        _worksMap.add(book);
     }
 
     public void addDVD(DVD dvd) {
-        _worksList.add(dvd);
+        _worksMap.add(dvd);
     }
 
     public void advanceDate() {
@@ -102,7 +110,25 @@ public class Library implements Serializable {
         System.out.println(_day);
     }
 
-    public void showUser(User user) { //FIXME
-        System.out.println(user.getID() + " - " + user.getName() + " - " + user.getEmail() + " - " + user.getBehaviour().getClass().getName() + " - " + user. )
+    public String showUser(int id) {
+        User user = _usersMap.get(id);
+        String r = user.getID() + " - " + user.getName() + " - " + user.getEmail() + " - " + user.getBehaviour().getClass().getName() + " - " + user.toStringActive();
+        if (user.getFine())
+            r = r + " - EUR " + user.getFine();
+        return r;
     }
-}
+
+    public boolean canRequest(Request request) {
+        return ok(request);
+    }
+
+    public Request request(User user, Work work) {
+        Request r = new Request(user, work, _day);
+        if (canRequest(r))
+            _requestsMap.add(r);
+    }
+
+    public ArrayList<Request> getRequestsList() {
+        return _requestsMap;
+    }
+ }

@@ -1,7 +1,8 @@
 package m19;
 
-public abstract class Rule {
+public interface Rule {
+    public boolean ok(Request request);
 
-    public abstract void check();
-
+    public void addRule(Rule rule);
+    public void removeRule(Rule rule);
 }

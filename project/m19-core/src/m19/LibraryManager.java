@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 
 public class LibraryManager {
     
-    private Library _library;  // FIXME initialize this attribute
+    private Library _library = new Library();
     private String _filename;
     
     public void save(Library library, String file) throws MissingFileAssociationException, IOException {
@@ -37,10 +37,37 @@ public class LibraryManager {
     public void importFile(String datafile) throws ImportFileException {
         try {
             _library.importFile(datafile);
-        } catch (IOException | BadEntrySpecificationException e) {
+        } catch (BadEntrySpecificationException e) {
+            throw new ImportFileException(e);
+        } catch (IOException e) {
             throw new ImportFileException(e);
         }
+
     }
+
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException {
+        _library.registerFromFields(fields);
+    }
+
+    public void registerUser(String... fields) {
+        _library.registerUser(fields);
+    }
+
+    public void registerWork(String... fields) {
+        _library.registerWork(fields);
+    }
+
+    /*public void addUser(User user) {
+        _library.addUser(user);
+    }
+
+    public void addBook(Book book) {
+        _library.addBook(book);
+    }
+
+    public void addDVD(DVD dvd) {
+        _library.addDVD(dvd); 
+    } isto existe? */
 
     public void advanceDate() {
         _library.advanceDate();
@@ -49,5 +76,19 @@ public class LibraryManager {
     public void displayDate() {
         _library.displayDate();
     }
+
+    public void showUser(int id) {
+        _library.showUser(id);
+    }
+
+    public void request(User user, Work work) {
+        _library.request(user, work);
+    }
+
+    public ArrayList<Request> getRequestsList() {
+        _library.getRequestsList();
+    }
+    
+
 
 }

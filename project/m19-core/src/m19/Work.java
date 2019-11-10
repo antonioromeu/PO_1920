@@ -5,14 +5,15 @@ public abstract class Work {
     private int _id;
     private int _copies;
     private int _price;
-    private Category _category;
+    private String _category;
     private String _title;
 
-    public Work(int worksCounter, int copies, int price, String title) {
+    public Work(int worksCounter, int copies, int price, String title, String category) {
         _id = worksCounter;
         _copies = copies;
         _price = price;
         _title = title;
+        _category = category;
     }
 
     public int getID() {
@@ -29,5 +30,9 @@ public abstract class Work {
 
     public String getTitle() {
         return _title;
+    }
+
+    public String getCategory() {
+        return _category;
     }
 }

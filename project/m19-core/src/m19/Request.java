@@ -44,4 +44,11 @@ public class Request {
             }
         }
     }
+    public Work getWork() {
+        return _work;
+    }
+    public User getUser() {
+        return _user;
+    }
+
 }

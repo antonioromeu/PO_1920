@@ -6,15 +6,15 @@ public class User {
     private String _name;
     private String _email;
     private boolean _active;
-    private double _fine;
+    private double _fine = 0;
     private Behaviour _behaviour = new NormalBehaved(this);
+    private int _numberWorks = 0;
 
     public User(int usersCounter, String name, String email) {
         _id = usersCounter;
         _name = name;
         _email = email;
         _active = true;
-        _fine = 0;
     }
 
     public int getID() {
@@ -33,8 +33,19 @@ public class User {
         return _active;
     }
 
+    public String toStringActive() {
+        if (_active) {
+            return "ACTIVO";
+        }
+        else return "PASSIVO";
+    }
+
     public double getFine() {
         return _fine;
+    }
+
+    public void setFine(int fine) {
+        _fine = fine;
     }
 
     public Behaviour getBehaviour() {
@@ -43,6 +54,14 @@ public class User {
 
     protected void setBehaviour(Behaviour b) {
         _behaviour = b;
+    }
+
+    public int getNumberWorks() {
+        return _numberWorks;
+    }
+
+    public void upNumberWorks() {
+        _numberWorks++;
     }
 
     public void checkLast3() {
@@ -58,5 +77,9 @@ public class User {
     }
 
     public void payFine() {} // PARA TERCEIRA ENTREGA
+
+    public void request(Request request) {
+        if (canRequest(request)) request.getReturnDay();
+    }
 
 }
