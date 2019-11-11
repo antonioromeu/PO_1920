@@ -1,9 +1,9 @@
 package m19;
 
-import java.util.ArrayList;
+import java.util.Map;
 
-public class ReferenceWorkRuleRule implements Rule {
-    public boolean ok(Request request) {
+public class ReferenceWorkRule implements Rule {
+    public boolean ok(Request request, Map<Integer, Request> requestMap) {
         return request.getWork().getCategory().equals("Reference");
     }
 }

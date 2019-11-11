@@ -35,4 +35,8 @@ public abstract class Work {
     public String getCategory() {
         return _category;
     }
+
+    public void incrementCopies() {
+        _copies++;
+    }
 }

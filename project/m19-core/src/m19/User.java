@@ -78,8 +78,4 @@ public class User {
 
     public void payFine() {} // PARA TERCEIRA ENTREGA
 
-    public void request(Request request) {
-        if (canRequest(request)) request.getReturnDay();
-    }
-
 }

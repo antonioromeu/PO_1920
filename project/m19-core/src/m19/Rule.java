@@ -1,8 +1,7 @@
 package m19;
 
-public interface Rule {
-    public boolean ok(Request request);
+import java.util.Map;
 
-    public void addRule(Rule rule);
-    public void removeRule(Rule rule);
+public interface Rule {
+    public boolean ok(Request request, Map<Integer, Request> requestMap);
 }

@@ -1,86 +1,96 @@
 package m19;
 
 import m19.LibraryManager;
-import m19.app.exceptions.UserRegistrationFailedException;
+//import m19.exceptions.UserRegistrationFailedException;
 import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.MissingFileAssociationException;
+import m19.exceptions.DuplicateUserException;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import java.util.regex.Pattern;
 
 public class Library implements Serializable {
 
     private static final long serialVersionUID = 201901101348L;
     private int _worksCounter = 0;
     private int _usersCounter = 0;
+    private int _day = 0;
     private RuleComposite _ruleComposite;
     private Map<Integer, Work> _worksMap;
     private Map<Integer, User> _usersMap;
-    private Map<Request> _requestsMap; //should we do treemaps? also, idea: request id = work id + user id !!
-    private int _day = 0;
+    private Map<Integer, Request> _requestsMap;
 
     public Library() {
-        _worksMap = new TreeMap<Integer, Work>();
-        _usersMap = new TreeMap<Integer, User>();
-        _requestsMap = new TreeMap<Integer, Request>();
+        _worksMap = new HashMap<Integer, Work>();
+        _usersMap = new HashMap<Integer, User>();
+        _requestsMap = new HashMap<Integer, Request>();
     }
 
-    void importFile(String filename) throws IOException, ImportFileException {
+    void importFile(String filename) throws IOException, BadEntrySpecificationException, ImportFileException, DuplicateUserException {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
         String line;
         while ((line = br.readLine()) != null) {
             String[] fields = line.split(":");
-            try {
+            try {  
                 registerFromFields(fields);
-            } catch (FileNotFoundException e) {
-                throw new ImportFileException(e);
-            } catch (MissingFileAssociationException e) {
-                throw new ImportFileException(e);
-            } catch (IOException e) {
-                throw new ImportFileException(e);
+            } catch (BadEntrySpecificationException e) {
+                throw new ImportFileException();
             }
         }
         br.close();
     }
 
-    void registerFromFields(String[] fields) throws BadEntrySpecificationException {
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException, DuplicateUserException {
         Pattern patWork = Pattern.compile("^(BOOK|DVD)");
         Pattern patUser = Pattern.compile("^(USER)");
-
         if (patUser.matcher(fields[0]).matches()) {
-            registerUser(fields);
+            try {
+                registerUser(fields);
+            } catch (DuplicateUserException e) {
+                throw new BadEntrySpecificationException(fields[1]);
+            }
         } else if (patWork.matcher(fields[0]).matches()) {
             registerWork(fields);
         } else {
-            throw new BadEntrySpecificationException(fields[0]);
+            throw new BadEntrySpecificationException(fields[1]);
         }
     }
 
-    public void registerUser(String... fields) { //FIX ME with exceptions
-        int id = getNewUserID();
+    public void registerUser(String... fields) throws DuplicateUserException { 
         if (fields[0].equals("USER")) {
-            User user = new User(id, fields[2], fields[3], fields[4]);
+            int id = getNewUserID();
+            if (_usersMap.containsKey(id))
+                throw new DuplicateUserException(id, fields[1]);
+            User user = new User(id, fields[1], fields[2]);
             addUser(user);
         } 
     }
 
-    public void registerWork(String... fields) { //FIX ME with exceptions
+    public void registerWork(String... fields) {
         int id = getNewWorkID();
-        if (fields[0].equals("BOOK")) {
-            Book book = new Book(id, fields[2], fields[3], fields[4]);
+        if (_worksMap.containsKey(id)) 
+            _worksMap.get(id).incrementCopies();
+        else if (fields[0].equals("BOOK")) {
+            Book book = new Book(id, fields[1], fields[2], Integer.parseInt(fields[3]), fields[4], fields[5], Integer.parseInt(fields[6]));
             addBook(book);
         } else if (fields[0].equals("DVD")) {
-            DVD dvd = new DVD(id, fields[2], fields[3], fields[4]);
+            DVD dvd = new DVD(id, fields[1], fields[2], Integer.parseInt(fields[3]), fields[4], fields[5], Integer.parseInt(fields[6]));
             addDVD(dvd);
         }
     } 
+
+    public RuleComposite getRuleComposite() {
+        return _ruleComposite;
+    }
 
     public int getNewUserID() {
         return _usersCounter++;
@@ -91,15 +101,15 @@ public class Library implements Serializable {
     }
 
     public void addUser(User user) {
-        _usersMap.add(user);
+        _usersMap.put(user.getID(), user);
     } 
 
     public void addBook(Book book) {
-        _worksMap.add(book);
+        _worksMap.put(book.getID(), book);
     }
 
     public void addDVD(DVD dvd) {
-        _worksMap.add(dvd);
+        _worksMap.put(dvd.getID(), dvd);
     }
 
     public void advanceDate() {
@@ -113,22 +123,27 @@ public class Library implements Serializable {
     public String showUser(int id) {
         User user = _usersMap.get(id);
         String r = user.getID() + " - " + user.getName() + " - " + user.getEmail() + " - " + user.getBehaviour().getClass().getName() + " - " + user.toStringActive();
-        if (user.getFine())
+        if (user.getFine() != 0)
             r = r + " - EUR " + user.getFine();
         return r;
     }
 
     public boolean canRequest(Request request) {
-        return ok(request);
+        for (Rule rule : _ruleComposite.getRulesList()) {
+            if (!rule.ok(request, _requestsMap)) return false;
+        }
+        return true;
     }
 
-    public Request request(User user, Work work) {
+    public void requestWork(int userID, int workID) {
+        User user = _usersMap.get(userID);
+        Work work = _worksMap.get(workID);
         Request r = new Request(user, work, _day);
         if (canRequest(r))
-            _requestsMap.add(r);
+            _requestsMap.put(r.getID(), r);
     }
 
-    public ArrayList<Request> getRequestsList() {
+    public Map<Integer, Request> getRequestsMap() {
         return _requestsMap;
     }
  }

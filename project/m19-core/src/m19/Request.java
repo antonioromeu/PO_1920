@@ -5,44 +5,51 @@ public class Request {
     private Work _work;
     private int _requestDay;
     private int _returnDay;
+    private int _id;
 
     public Request(User user, Work work, int requestDay) {
         _user = user;
         _work = work;
         _requestDay = requestDay;
+        _id = user.getID() + work.getID();
     }
 
-    public getReturnDay() {
+    public int getID() {
+        return _id;
+    }
+
+    public int getReturnDay() {
         if (_work.getCopies() == 1) {
-            switch(_user.getBehaviour()) {
-                case WellBehaved:
+            switch(_user.getBehaviour().getClass().getName()) {
+                case "WellBehaved":
                     _returnDay = _requestDay + 8;
-                case NormalBehaved:
+                case "NormalBehaved":
                     _returnDay = _requestDay + 3;
-                case BadlyBehaved:
+                case "BadlyBehaved":
                     _returnDay = _requestDay + 2;
             }
         }
         if (_work.getCopies() <= 5) {
-            switch(_user.getBehaviour()) {
-                case WellBehaved:
+            switch(_user.getBehaviour().getClass().getName()) {
+                case "WellBehaved":
                     _returnDay = _requestDay + 15;
-                case NormalBehaved:
+                case "NormalBehaved":
                     _returnDay = _requestDay + 8;
-                case BadlyBehaved:
+                case "BadlyBehaved":
                     _returnDay = _requestDay + 2;
             }
         }
         if (_work.getCopies() > 5) {
-            switch(_user.getBehaviour()) {
-                case WellBehaved:
+            switch(_user.getBehaviour().getClass().getName()) {
+                case "WellBehaved":
                     _returnDay = _requestDay + 30;
-                case NormalBehaved:
+                case "NormalBehaved":
                     _returnDay = _requestDay + 15;
-                case BadlyBehaved:
+                case "BadlyBehaved":
                     _returnDay = _requestDay + 2;
             }
         }
+        return _returnDay;
     }
     public Work getWork() {
         return _work;
@@ -50,5 +57,4 @@ public class Request {
     public User getUser() {
         return _user;
     }
-
 }
