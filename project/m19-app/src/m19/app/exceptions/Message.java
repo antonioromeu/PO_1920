@@ -11,6 +11,10 @@ public interface Message {
         return "O utente " + idUser + " não existe.";
     }
 
+    static String userAlreadyExists() {
+        return "O utente já existe.";
+    }
+
     static String userNotSuspended(int idUser) {
         return "O utente " + idUser + " não se encontra suspenso.";
     }

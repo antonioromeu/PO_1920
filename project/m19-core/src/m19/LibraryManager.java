@@ -5,6 +5,7 @@ import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.DuplicateUserException;
 import m19.exceptions.FailedToOpenFileException;
 import m19.exceptions.ImportFileException;
+import m19.exceptions.NoSuchUserException;
 import java.io.IOException;
 
 import java.io.ObjectInputStream;
@@ -48,17 +49,13 @@ public class LibraryManager {
 
     }
 
-    /*void registerFromFields(String[] fields) throws BadEntrySpecificationException {
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException, DuplicateUserException {
         _library.registerFromFields(fields);
     }
 
-    public void registerUser(String... fields) {
-        _library.registerUser(fields);
+    public void registerUser(String name, String mail) throws DuplicateUserException {
+        _library.registerUser(name, mail);
     }
-
-    public void registerWork(String... fields) {
-        _library.registerWork(fields);
-    }*/
 
     public void advanceDate() {
         _library.advanceDate();
@@ -68,11 +65,15 @@ public class LibraryManager {
         _library.displayDate();
     }
 
-    public void showUser(int id) {
-        _library.showUser(id);
-    }
-
     public void requestWork(int userID, int workID) {
         _library.requestWork(userID, workID);
+    }
+
+    public User getUser(int id) throws NoSuchUserException {
+        try {
+            return _library.getUser(id);
+        } catch (NoSuchUserException e) {
+            throw new NoSuchUserException();
+        }
     }
 }

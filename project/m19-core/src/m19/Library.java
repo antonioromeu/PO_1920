@@ -6,6 +6,7 @@ import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.MissingFileAssociationException;
 import m19.exceptions.DuplicateUserException;
+import m19.exceptions.NoSuchUserException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -54,30 +55,20 @@ public class Library implements Serializable {
         Pattern patUser = Pattern.compile("^(USER)");
         if (patUser.matcher(fields[0]).matches()) {
             try {
-                registerUser(fields);
+                registerUser(fields[1], fields[2]);
             } catch (DuplicateUserException e) {
                 throw new BadEntrySpecificationException(fields[1]);
             }
         } else if (patWork.matcher(fields[0]).matches()) {
-            registerWork(fields);
+            registerWork(fields[1], fields[2],fields[3], fields[4], fields[5], fields[6]);
         } else {
             throw new BadEntrySpecificationException(fields[1]);
         }
     }
 
-    public void registerUser(String... fields) throws DuplicateUserException { 
-        if (fields[0].equals("USER")) {
-            int id = getNewUserID();
-            if (_usersMap.containsKey(id))
-                throw new DuplicateUserException(id, fields[1]);
-            User user = new User(id, fields[1], fields[2]);
-            addUser(user);
-        } 
-    }
-
     public void registerWork(String... fields) {
         int id = getNewWorkID();
-        if (_worksMap.containsKey(id)) 
+        if (_worksMap.containsKey(id))
             _worksMap.get(id).incrementCopies();
         else if (fields[0].equals("BOOK")) {
             Book book = new Book(id, fields[1], fields[2], Integer.parseInt(fields[3]), fields[4], fields[5], Integer.parseInt(fields[6]));
@@ -86,7 +77,15 @@ public class Library implements Serializable {
             DVD dvd = new DVD(id, fields[1], fields[2], Integer.parseInt(fields[3]), fields[4], fields[5], Integer.parseInt(fields[6]));
             addDVD(dvd);
         }
-    } 
+    }
+
+    public void registerUser(String name, String mail) throws DuplicateUserException { 
+        int id = getNewUserID();
+        if (_usersMap.containsKey(id))
+            throw new DuplicateUserException(id, name);
+        User user = new User(id, name, mail);
+        addUser(user); 
+    }
 
     public RuleComposite getRuleComposite() {
         return _ruleComposite;
@@ -98,6 +97,10 @@ public class Library implements Serializable {
 
     public int getNewWorkID() {
         return _worksCounter++;
+    }
+
+    public User getUser(int id) throws NoSuchUserException {
+        return _usersMap.get(id);
     }
 
     public void addUser(User user) {
@@ -120,8 +123,9 @@ public class Library implements Serializable {
         System.out.println(_day);
     }
 
-    public String showUser(int id) {
+    public String showUser(int id) throws NoSuchUserException {
         User user = _usersMap.get(id);
+        if (user == null) throw new NoSuchUserException();
         String r = user.getID() + " - " + user.getName() + " - " + user.getEmail() + " - " + user.getBehaviour().getClass().getName() + " - " + user.toStringActive();
         if (user.getFine() != 0)
             r = r + " - EUR " + user.getFine();
@@ -146,4 +150,4 @@ public class Library implements Serializable {
     public Map<Integer, Request> getRequestsMap() {
         return _requestsMap;
     }
- }
+}
