@@ -3,21 +3,28 @@ package m19.app.requests;
 import m19.LibraryManager;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
-// FIXME import core concepts
-// FIXME import ui concepts
+import pt.tecnico.po.ui.Input;
 
 public class DoRequestWork extends Command<LibraryManager> {
 
-    // FIXME define input fields
+    Input<Integer> _workID;
+    Input<Integer> _userID;
 
     public DoRequestWork(LibraryManager receiver) {
         super(Label.REQUEST_WORK, receiver);
-        // FIXME initialize input fields
+        _workID = _form.addIntegerInput(Message.requestWorkId());
+        _userID = _form.addIntegerInput(Message.requestUserId());
     }
 
     @Override
     public final void execute() throws DialogException {
-        // FIXME implement command
+        /*_form.parse();
+        try {
+            _display.popup(_receiver.requestWork(_userID.value(), _workID.value()));
+        } catch (NoSuchUserExistsInMapException e) {
+            throw new NoSuchUserException(_userID.value());
+        } catch (NoSuchWorkExistsInMapException e) {
+            throw new NoSuchWorkException(_id.value());
+        }*/
     }
-
 }

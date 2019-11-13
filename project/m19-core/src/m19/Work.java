@@ -18,7 +18,12 @@ public abstract class Work implements Serializable {
         _copies = copies;
         _price = price;
         _title = title;
-        _category = category;
+        if (category.equals("FICTION"))
+            _category = "Ficção";
+        else if (category.equals("SCITECH)"))
+            _category = "Técnica e Científica";
+        else
+            _category = "Referência";
         _copiesTaken = 0;
     }
 
@@ -51,7 +56,7 @@ public abstract class Work implements Serializable {
     }
 
     public String showWork() {
-        String r = getID() + " - " + getCopiesTaken() +  " de " + getCopies() + " - ";
+        String r = getID() + " - " + (getCopies() - getCopiesTaken()) +  " de " + getCopies() + " -";
         return r;
     }
 }

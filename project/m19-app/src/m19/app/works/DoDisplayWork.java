@@ -3,21 +3,29 @@ package m19.app.works;
 import m19.LibraryManager;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
-// FIXME import core concepts
-// FIXME import ui concepts
+import pt.tecnico.po.ui.Input;
+import m19.app.exceptions.NoSuchWorkException;
+import m19.exceptions.NoSuchWorkExistsInMapException;
+
+
 
 public class DoDisplayWork extends Command<LibraryManager> {
 
-    // FIXME define input fields
+    Input<Integer> _id;
 
     public DoDisplayWork(LibraryManager receiver) {
         super(Label.SHOW_WORK, receiver);
-        // FIXME initialize input fields
+        _id = _form.addIntegerInput(Message.requestWorkId());
     }
 
     @Override
     public final void execute() throws DialogException {
-        // FIXME implement command
+        _form.parse();
+        try {
+            _display.popup(_receiver.showWork(_id.value()));
+        } catch (NoSuchWorkExistsInMapException e) {
+            throw new NoSuchWorkException(_id.value());
+        }
     }
   
 }

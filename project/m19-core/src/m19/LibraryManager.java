@@ -7,8 +7,9 @@ import m19.exceptions.DuplicateUserException;
 import m19.exceptions.FailedToOpenFileException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
-import java.io.IOException;
+import m19.exceptions.NoSuchWorkExistsInMapException;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
@@ -66,7 +67,7 @@ public class LibraryManager {
         return _library.getDate();
     }
 
-    public void requestWork(int userID, int workID) {
+    public void requestWork(int userID, int workID) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException {
         _library.requestWork(userID, workID);
     }
 
@@ -76,5 +77,13 @@ public class LibraryManager {
 
     public String showUsers() {
         return _library.showUsers();
+    }
+
+    public String showWork(int id) throws NoSuchWorkExistsInMapException {
+        return _library.showWork(id);
+    }
+
+    public String showWorks() {
+        return _library.showWorks();
     }
 }

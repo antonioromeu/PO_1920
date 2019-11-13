@@ -1,11 +1,10 @@
 package m19;
 
-//import m19.exceptions.UserRegistrationFailedException;
 import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.ImportFileException;
-import m19.exceptions.MissingFileAssociationException;
 import m19.exceptions.DuplicateUserException;
 import m19.exceptions.NoSuchUserExistsInMapException;
+import m19.exceptions.NoSuchWorkExistsInMapException;
 import m19.exceptions.NegativeDaysToAdvanceException;
 
 import java.io.IOException;
@@ -13,8 +12,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.regex.Pattern;
@@ -34,6 +31,7 @@ public class Library implements Serializable {
         _worksMap = new HashMap<Integer, Work>();
         _usersMap = new HashMap<Integer, User>();
         _requestsMap = new HashMap<Integer, Request>();
+        //_ruleComposite = new RuleComposite();
     }
 
     void importFile(String filename) throws BadEntrySpecificationException, ImportFileException {
@@ -63,7 +61,7 @@ public class Library implements Serializable {
             }
         }
         else if (patWork.matcher(fields[0]).matches()) {
-            registerWork(fields[1], fields[2],fields[3], fields[4], fields[5], fields[6]);
+            registerWork(fields);
         }
         else
             throw new BadEntrySpecificationException(fields[1]);
@@ -71,9 +69,7 @@ public class Library implements Serializable {
 
     public void registerWork(String... fields) {
         int id = getNewWorkID();
-        if (_worksMap.containsKey(id))
-            _worksMap.get(id).incrementCopies();
-        else if (fields[0].equals("BOOK")) {
+        if (fields[0].equals("BOOK")) {
             Book book = new Book(id, fields[1], fields[2], Integer.parseInt(fields[3]), fields[4], fields[5], Integer.parseInt(fields[6]));
             addBook(book);
         } else if (fields[0].equals("DVD")) {
@@ -148,7 +144,8 @@ public class Library implements Serializable {
 
     public String showUser(int id) throws NoSuchUserExistsInMapException {
         User user = _usersMap.get(id);
-        if (user == null) throw new NoSuchUserExistsInMapException();
+        if (user == null) 
+            throw new NoSuchUserExistsInMapException();
         return user.showUser();
     }
 
@@ -160,16 +157,17 @@ public class Library implements Serializable {
         return r;
     }
 
-    public String showWork(int id) {
+    public String showWork(int id) throws NoSuchWorkExistsInMapException {
         Work work = _worksMap.get(id);
-        if (work != null)
+        if (work == null) 
+            throw new NoSuchWorkExistsInMapException();
         return work.showWork();
     }
 
-    public String showUsers() {
+    public String showWorks() {
         String r = "";
-        for (User u : _usersMap.values()) {
-            r = r + u.showUser() + "\n";
+        for (Work w : _worksMap.values()) {
+            r = r + w.showWork() + "\n";
         }
         return r;
     }
@@ -181,9 +179,13 @@ public class Library implements Serializable {
         return true;
     }
 
-    public void requestWork(int userID, int workID) {
+    public void requestWork(int userID, int workID) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException {
         User user = _usersMap.get(userID);
+        if (user == null) 
+            throw new NoSuchUserExistsInMapException();
         Work work = _worksMap.get(workID);
+        if (work == null) 
+            throw new NoSuchWorkExistsInMapException();
         Request r = new Request(user, work, _day);
         if (canRequest(r))
             _requestsMap.put(r.getID(), r);
