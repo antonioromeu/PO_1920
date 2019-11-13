@@ -22,4 +22,9 @@ public class NormalBehaved extends Behaviour {
         _user.setBehaviour(new WellBehaved(_user));
     }
 
+    @Override
+    public String toString() {
+        return "NORMAL";
+    }
+
 }

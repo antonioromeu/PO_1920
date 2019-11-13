@@ -1,11 +1,12 @@
 package m19;
 
 import m19.exceptions.MissingFileAssociationException;
+import m19.exceptions.NegativeDaysToAdvanceException;
 import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.DuplicateUserException;
 import m19.exceptions.FailedToOpenFileException;
 import m19.exceptions.ImportFileException;
-import m19.exceptions.NoSuchUserException;
+import m19.exceptions.NoSuchUserExistsInMapException;
 import java.io.IOException;
 
 import java.io.ObjectInputStream;
@@ -53,27 +54,27 @@ public class LibraryManager {
         _library.registerFromFields(fields);
     }
 
-    public void registerUser(String name, String mail) throws DuplicateUserException {
-        _library.registerUser(name, mail);
+    public int registerUser(String name, String mail) throws DuplicateUserException {
+        return _library.registerUser(name, mail);
     }
 
-    public void advanceDate() {
-        _library.advanceDate();
+    public void advanceDate(int days) throws NegativeDaysToAdvanceException {
+        _library.advanceDate(days);
     }
 
-    public void displayDate() {
-        _library.displayDate();
+    public int getDate() {
+        return _library.getDate();
     }
 
     public void requestWork(int userID, int workID) {
         _library.requestWork(userID, workID);
     }
 
-    public User getUser(int id) throws NoSuchUserException {
-        try {
-            return _library.getUser(id);
-        } catch (NoSuchUserException e) {
-            throw new NoSuchUserException();
-        }
+    public String showUser(int id) throws NoSuchUserExistsInMapException {
+        return _library.showUser(id);
+    }
+
+    public String showUsers() {
+        return _library.showUsers();
     }
 }

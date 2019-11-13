@@ -1,12 +1,12 @@
 package m19;
 
-import m19.LibraryManager;
 //import m19.exceptions.UserRegistrationFailedException;
 import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.MissingFileAssociationException;
 import m19.exceptions.DuplicateUserException;
-import m19.exceptions.NoSuchUserException;
+import m19.exceptions.NoSuchUserExistsInMapException;
+import m19.exceptions.NegativeDaysToAdvanceException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 public class Library implements Serializable {
 
     private static final long serialVersionUID = 201901101348L;
-    private int _worksCounter = 0;
-    private int _usersCounter = 0;
+    private int _worksCounter = 1;
+    private int _usersCounter = 1;
     private int _day = 0;
     private RuleComposite _ruleComposite;
     private Map<Integer, Work> _worksMap;
@@ -79,12 +79,13 @@ public class Library implements Serializable {
         }
     }
 
-    public void registerUser(String name, String mail) throws DuplicateUserException { 
+    public int registerUser(String name, String mail) throws DuplicateUserException { 
         int id = getNewUserID();
         if (_usersMap.containsKey(id))
             throw new DuplicateUserException(id, name);
         User user = new User(id, name, mail);
         addUser(user); 
+        return id;
     }
 
     public RuleComposite getRuleComposite() {
@@ -99,9 +100,17 @@ public class Library implements Serializable {
         return _worksCounter++;
     }
 
-    public User getUser(int id) throws NoSuchUserException {
+    public User getUser(int id) throws NoSuchUserExistsInMapException {
+        User u = _usersMap.get(id);
+        if (u == null) 
+            throw new NoSuchUserExistsInMapException();
         return _usersMap.get(id);
     }
+
+    public Map<Integer, User> getAllUsers() {
+        return _usersMap;
+    }
+
 
     public void addUser(User user) {
         _usersMap.put(user.getID(), user);
@@ -115,20 +124,26 @@ public class Library implements Serializable {
         _worksMap.put(dvd.getID(), dvd);
     }
 
-    public void advanceDate() {
-        _day++;
+    public void advanceDate(int days) throws NegativeDaysToAdvanceException {
+        if (days < 0) throw new NegativeDaysToAdvanceException(); 
+        _day += days;
     }
 
-    public void displayDate() {
-        System.out.println(_day);
+    public int getDate() {
+        return _day;
     }
 
-    public String showUser(int id) throws NoSuchUserException {
+    public String showUser(int id) throws NoSuchUserExistsInMapException {
         User user = _usersMap.get(id);
-        if (user == null) throw new NoSuchUserException();
-        String r = user.getID() + " - " + user.getName() + " - " + user.getEmail() + " - " + user.getBehaviour().getClass().getName() + " - " + user.toStringActive();
-        if (user.getFine() != 0)
-            r = r + " - EUR " + user.getFine();
+        if (user == null) throw new NoSuchUserExistsInMapException();
+        return user.showUser();
+    }
+
+    public String showUsers() {
+        String r = "";
+        for (User u : _usersMap.values()) {
+            r = r + u.showUser() + "\n";
+        }
         return r;
     }
 

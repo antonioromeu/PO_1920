@@ -78,4 +78,11 @@ public class User {
 
     public void payFine() {} // PARA TERCEIRA ENTREGA
 
+    public String showUser() {
+        String r = getID() + " - " + getName() + " - " + getEmail() + " - " + getBehaviour().toString() + " - " + toStringActive();
+        if (getFine() != 0)
+            r = r + " - EUR " + getFine();
+        return r;
+    }
+
 }

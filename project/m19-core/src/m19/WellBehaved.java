@@ -16,5 +16,10 @@ public class WellBehaved extends Behaviour {
 
     @Override
     public void checkLast5() {}
+
+    @Override
+    public String toString() {
+        return "CUMPRIDOR";
+    }
     
 }

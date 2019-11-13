@@ -22,4 +22,9 @@ public class BadlyBehaved extends Behaviour {
         _user.setBehaviour(new WellBehaved(_user));
     }
 
+    @Override
+    public String toString() {
+        return "FALTOSO";
+    }
+
 }

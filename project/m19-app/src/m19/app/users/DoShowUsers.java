@@ -3,8 +3,6 @@ package m19.app.users;
 import m19.LibraryManager;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
-// FIXME import core concepts
-// FIXME import ui concepts
 
 public class DoShowUsers extends Command<LibraryManager> {
 
@@ -14,7 +12,6 @@ public class DoShowUsers extends Command<LibraryManager> {
 
     @Override
     public final void execute() {
-        // FIXME implement command
+        _display.popup(_receiver.showUsers());
     }
-  
 }

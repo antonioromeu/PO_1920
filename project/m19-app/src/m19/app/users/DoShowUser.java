@@ -2,6 +2,7 @@ package m19.app.users;
 
 import m19.LibraryManager;
 import m19.app.exceptions.NoSuchUserException;
+import m19.exceptions.NoSuchUserExistsInMapException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import pt.tecnico.po.ui.Input;
@@ -16,11 +17,11 @@ public class DoShowUser extends Command<LibraryManager> {
     }
 
     @Override
-    public final void execute() throws DialogException {
+    public final void execute() throws DialogException, NoSuchUserException {
         _form.parse();
         try {
-            _display.popup(_receiver.getUser(_id.value()));
-        } catch (NoSuchUserException e) {
+            _display.popup(_receiver.showUser(_id.value()));
+        } catch (NoSuchUserExistsInMapException e) {
             throw new NoSuchUserException(_id.value());
         }
     }

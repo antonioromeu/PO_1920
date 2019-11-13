@@ -7,7 +7,6 @@ import m19.app.exceptions.UserAlreadyExistsException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import pt.tecnico.po.ui.Input;
-// FIXME import core concepts
 
 public class DoRegisterUser extends Command<LibraryManager> {
     Input<String> _name;
@@ -23,7 +22,9 @@ public class DoRegisterUser extends Command<LibraryManager> {
     public final void execute() throws DialogException {
         _form.parse();
         try {
-            _receiver.registerUser(_name.value(), _mail.value());
+            //_receiver.registerUser(_name.value(), _mail.value());
+            
+            System.out.println(Message.userRegistrationSuccessful(_receiver.registerUser(_name.value(), _mail.value())));
         } catch (DuplicateUserException e) {
             throw new UserAlreadyExistsException();
         }

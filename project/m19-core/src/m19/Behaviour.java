@@ -23,6 +23,7 @@ public abstract class Behaviour {
         return getClass().getName();
     }
 
+    public abstract String toString();
     public abstract void checkLast3();
     public abstract void checkLast5();
 

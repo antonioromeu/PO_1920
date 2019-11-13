@@ -39,4 +39,7 @@ public interface Message {
         return "O ficheiro '" + filename + "' não existe.";
     }
 
+    static String negativeDaysToAdvance() {
+        return "Impossível avançar um número negativo de dias.";
+      }
 }
