@@ -1,9 +1,14 @@
 package m19;
 
-public abstract class Work {
+import java.io.Serializable;
+
+public abstract class Work implements Serializable {
+
+    private static final long serialVersionUID = 20160823140L;
 
     private int _id;
     private int _copies;
+    private int _copiesTaken;
     private int _price;
     private String _category;
     private String _title;
@@ -14,6 +19,7 @@ public abstract class Work {
         _price = price;
         _title = title;
         _category = category;
+        _copiesTaken = 0;
     }
 
     public int getID() {
@@ -22,6 +28,10 @@ public abstract class Work {
 
     public int getCopies() {
         return _copies;
+    }
+
+    public int getCopiesTaken() {
+        return _copiesTaken;
     }
 
     public int getPrice() {
@@ -38,5 +48,10 @@ public abstract class Work {
 
     public void incrementCopies() {
         _copies++;
+    }
+
+    public String showWork() {
+        String r = getID() + " - " + getCopiesTaken() +  " de " + getCopies() + " - ";
+        return r;
     }
 }

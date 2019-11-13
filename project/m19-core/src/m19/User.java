@@ -1,6 +1,10 @@
 package m19;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 201608231530L;
 
     private int _id;
     private String _name;

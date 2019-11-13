@@ -1,6 +1,8 @@
 package m19;
 
 public class BadlyBehaved extends Behaviour {
+
+    private static final long serialVersionUID = 20160823115L;
     
     public BadlyBehaved(User user) {
         super(user);

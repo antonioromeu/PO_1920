@@ -18,36 +18,36 @@ import java.io.FileOutputStream;
 public class LibraryManager {
     
     private Library _library = new Library();
-    private String _filename;
-    private boolean _saved = false;
+    private String _filename = "";
     
-    public void save(Library library, String file) throws MissingFileAssociationException, IOException {
-        if (!_saved) {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-            out.writeObject(library);
-            out.close();
-            _saved = true;
-        }
+    public void save(Library library, String file) throws IOException {
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+        out.writeObject(library);
+        out.close();
     }
 
-    public void saveAs(String filename) throws MissingFileAssociationException, IOException {
+    public void saveAs(String filename) throws IOException {
         _filename = filename;
         save(_library, _filename);
     }
 
-    public void load(String filename) throws FailedToOpenFileException, IOException, ClassNotFoundException {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
-            _library = (Library) in.readObject();  
-            in.close();
+    public Library load(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
+        _library = (Library) in.readObject();  
+        in.close();
+        return _library;
     }
     
     public void importFile(String datafile) throws ImportFileException {
         try {
             _library.importFile(datafile);
-        } catch (IOException | BadEntrySpecificationException | DuplicateUserException e) {
-            throw new ImportFileException();
+        } catch (BadEntrySpecificationException | ImportFileException e) {
+            throw new ImportFileException(datafile);
         }
+    }
 
+    public String getFileName() {
+        return _filename;
     }
 
     void registerFromFields(String[] fields) throws BadEntrySpecificationException, DuplicateUserException {

@@ -16,7 +16,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
+import java.io.FileReader;
 import java.util.regex.Pattern;
 
 public class Library implements Serializable {
@@ -36,21 +36,23 @@ public class Library implements Serializable {
         _requestsMap = new HashMap<Integer, Request>();
     }
 
-    void importFile(String filename) throws IOException, BadEntrySpecificationException, ImportFileException, DuplicateUserException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] fields = line.split(":");
-            try {  
+    void importFile(String filename) throws BadEntrySpecificationException, ImportFileException {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(":");
                 registerFromFields(fields);
-            } catch (BadEntrySpecificationException e) {
-                throw new ImportFileException();
             }
+            br.close();
+        } catch (FileNotFoundException e) {
+            throw new ImportFileException();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        br.close();
     }
 
-    void registerFromFields(String[] fields) throws BadEntrySpecificationException, DuplicateUserException {
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException {
         Pattern patWork = Pattern.compile("^(BOOK|DVD)");
         Pattern patUser = Pattern.compile("^(USER)");
         if (patUser.matcher(fields[0]).matches()) {
@@ -59,11 +61,12 @@ public class Library implements Serializable {
             } catch (DuplicateUserException e) {
                 throw new BadEntrySpecificationException(fields[1]);
             }
-        } else if (patWork.matcher(fields[0]).matches()) {
-            registerWork(fields[1], fields[2],fields[3], fields[4], fields[5], fields[6]);
-        } else {
-            throw new BadEntrySpecificationException(fields[1]);
         }
+        else if (patWork.matcher(fields[0]).matches()) {
+            registerWork(fields[1], fields[2],fields[3], fields[4], fields[5], fields[6]);
+        }
+        else
+            throw new BadEntrySpecificationException(fields[1]);
     }
 
     public void registerWork(String... fields) {
@@ -111,6 +114,16 @@ public class Library implements Serializable {
         return _usersMap;
     }
 
+    public Work getWork(int id) {
+        Work w = _worksMap.get(id);
+        if (w != null)
+            return _worksMap.get(id);
+        return null;
+    }
+
+    public Map<Integer, Work> getAllWorks() {
+        return _worksMap;
+    }
 
     public void addUser(User user) {
         _usersMap.put(user.getID(), user);
@@ -137,6 +150,20 @@ public class Library implements Serializable {
         User user = _usersMap.get(id);
         if (user == null) throw new NoSuchUserExistsInMapException();
         return user.showUser();
+    }
+
+    public String showUsers() {
+        String r = "";
+        for (User u : _usersMap.values()) {
+            r = r + u.showUser() + "\n";
+        }
+        return r;
+    }
+
+    public String showWork(int id) {
+        Work work = _worksMap.get(id);
+        if (work != null)
+        return work.showWork();
     }
 
     public String showUsers() {

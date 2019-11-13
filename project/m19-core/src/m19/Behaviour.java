@@ -1,8 +1,11 @@
 package m19;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Behaviour {
+public abstract class Behaviour implements Serializable {
+
+    private static final long serialVersionUID = 20160823120L;
 
     protected User _user; //FAZ SENTIDO?
     private ArrayList<Integer> _behaviourList; //1 entregou a tempo; 0 falhou entrega

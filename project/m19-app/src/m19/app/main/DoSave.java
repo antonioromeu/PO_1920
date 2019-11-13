@@ -1,22 +1,33 @@
 package m19.app.main;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import m19.LibraryManager;
+import m19.exceptions.MissingFileAssociationException;
+import m19.app.exceptions.FileDoesNotExistException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
-// FIXME import core concepts
-// FIXME import ui concepts
+import pt.tecnico.po.ui.Input;
 
 public class DoSave extends Command<LibraryManager> {
   
-    // FIXME define input fields
+    Input<String> _filename;
 
     public DoSave(LibraryManager receiver) {
         super(Label.SAVE, receiver);
-        // FIXME initialize input fields
+        _filename = _form.addStringInput(Message.newSaveAs());
     }
 
     @Override
     public final void execute() {
-        // FIXME implement command
+        if (_receiver.getFileName() == "") {
+            _form.parse();
+        }
+        try {
+            _receiver.saveAs(_filename.value());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

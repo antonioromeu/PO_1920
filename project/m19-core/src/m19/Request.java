@@ -1,6 +1,11 @@
 package m19;
 
-public class Request {
+import java.io.Serializable;
+
+public class Request implements Serializable {
+
+    private static final long serialVersionUID = 20160823120L;
+
     private User _user;
     private Work _work;
     private int _requestDay;

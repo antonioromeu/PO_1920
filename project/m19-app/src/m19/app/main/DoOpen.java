@@ -5,29 +5,33 @@ import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import m19.exceptions.FailedToOpenFileException;
 import m19.app.exceptions.FileOpenFailedException;
-import java.io.IOException;
+import m19.app.exceptions.FileDoesNotExistException;
 
-// FIXME import core concepts
-// FIXME import ui concepts
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import pt.tecnico.po.ui.Input;
 
 public class DoOpen extends Command<LibraryManager> {
 
-    // FIXME define input fields if needed
+    Input<String> _filename;
 
     public DoOpen(LibraryManager receiver) {
         super(Label.OPEN, receiver);
-        // FIXME initialize input fields if needed
+        _filename = _form.addStringInput(Message.openFile());
     }
 
     @Override
     public final void execute() throws DialogException {
-        /*try {
-        // FIXME implement command
-        } catch (FailedToOpenFileException fnfe) {
-        throw new FileOpenFailedException(fnfe.getName());
-        } catch (ClassNotFoundException | IOException e) {
-        e.printStackTrace();
-        }*/
+        _form.parse();
+        try {
+            _receiver.load(_filename.value());
+        } catch (FileNotFoundException e) {
+            throw new FileDoesNotExistException(_filename.value());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace(); //esta bem?
+        }
     }
 
 }
