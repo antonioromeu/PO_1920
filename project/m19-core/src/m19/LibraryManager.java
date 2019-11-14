@@ -1,7 +1,6 @@
 package m19;
 
 import m19.exceptions.MissingFileAssociationException;
-import m19.exceptions.NegativeDaysToAdvanceException;
 import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
