@@ -38,8 +38,4 @@ public interface Message {
     static String fileNotFound(String filename) {
         return "O ficheiro '" + filename + "' não existe.";
     }
-
-    static String negativeDaysToAdvance() {
-        return "Impossível avançar um número negativo de dias.";
-      }
 }

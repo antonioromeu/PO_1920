@@ -20,7 +20,7 @@ public abstract class Work implements Serializable {
         _title = title;
         if (category.equals("FICTION"))
             _category = "Ficção";
-        else if (category.equals("SCITECH)"))
+        else if (category.equals("SCITECH")) 
             _category = "Técnica e Científica";
         else
             _category = "Referência";

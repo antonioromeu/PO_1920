@@ -3,8 +3,6 @@ package m19;
 import m19.exceptions.MissingFileAssociationException;
 import m19.exceptions.NegativeDaysToAdvanceException;
 import m19.exceptions.BadEntrySpecificationException;
-import m19.exceptions.DuplicateUserException;
-import m19.exceptions.FailedToOpenFileException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
@@ -51,15 +49,15 @@ public class LibraryManager {
         return _filename;
     }
 
-    void registerFromFields(String[] fields) throws BadEntrySpecificationException, DuplicateUserException {
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException {
         _library.registerFromFields(fields);
     }
 
-    public int registerUser(String name, String mail) throws DuplicateUserException {
+    public int registerUser(String name, String mail) {
         return _library.registerUser(name, mail);
     }
 
-    public void advanceDate(int days) throws NegativeDaysToAdvanceException {
+    public void advanceDate(int days) {
         _library.advanceDate(days);
     }
 

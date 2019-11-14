@@ -2,10 +2,8 @@ package m19;
 
 import m19.exceptions.BadEntrySpecificationException;
 import m19.exceptions.ImportFileException;
-import m19.exceptions.DuplicateUserException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
-import m19.exceptions.NegativeDaysToAdvanceException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -19,8 +17,8 @@ import java.util.regex.Pattern;
 public class Library implements Serializable {
 
     private static final long serialVersionUID = 201901101348L;
-    private int _worksCounter = 1;
-    private int _usersCounter = 1;
+    private int _worksCounter = 0;
+    private int _usersCounter = 0;
     private int _day = 0;
     private RuleComposite _ruleComposite;
     private Map<Integer, Work> _worksMap;
@@ -54,11 +52,7 @@ public class Library implements Serializable {
         Pattern patWork = Pattern.compile("^(BOOK|DVD)");
         Pattern patUser = Pattern.compile("^(USER)");
         if (patUser.matcher(fields[0]).matches()) {
-            try {
                 registerUser(fields[1], fields[2]);
-            } catch (DuplicateUserException e) {
-                throw new BadEntrySpecificationException(fields[1]);
-            }
         }
         else if (patWork.matcher(fields[0]).matches()) {
             registerWork(fields);
@@ -78,18 +72,16 @@ public class Library implements Serializable {
         }
     }
 
-    public int registerUser(String name, String mail) throws DuplicateUserException { 
+    public int registerUser(String name, String mail) { 
         int id = getNewUserID();
-        if (_usersMap.containsKey(id))
-            throw new DuplicateUserException(id, name);
         User user = new User(id, name, mail);
         addUser(user); 
         return id;
     }
 
-    public RuleComposite getRuleComposite() {
+    /*public RuleComposite getRuleComposite() {
         return _ruleComposite;
-    }
+    }*/
 
     public int getNewUserID() {
         return _usersCounter++;
@@ -133,8 +125,8 @@ public class Library implements Serializable {
         _worksMap.put(dvd.getID(), dvd);
     }
 
-    public void advanceDate(int days) throws NegativeDaysToAdvanceException {
-        if (days < 0) throw new NegativeDaysToAdvanceException(); 
+    public void advanceDate(int days) {
+        if (days > 0) 
         _day += days;
     }
 

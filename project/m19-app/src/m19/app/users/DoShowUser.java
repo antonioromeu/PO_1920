@@ -20,7 +20,7 @@ public class DoShowUser extends Command<LibraryManager> {
     public final void execute() throws DialogException, NoSuchUserException {
         _form.parse();
         try {
-            _display.popup(_receiver.showUser(_id.value()));
+            _display.popup(_receiver.showUser(_id.value())); 
         } catch (NoSuchUserExistsInMapException e) {
             throw new NoSuchUserException(_id.value());
         }

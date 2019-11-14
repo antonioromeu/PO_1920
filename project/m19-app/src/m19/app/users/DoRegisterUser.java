@@ -1,9 +1,7 @@
 package m19.app.users;
 
 import m19.LibraryManager;
-import m19.exceptions.DuplicateUserException;
 import m19.app.exceptions.NoSuchUserException;
-import m19.app.exceptions.UserAlreadyExistsException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import pt.tecnico.po.ui.Input;
@@ -21,12 +19,6 @@ public class DoRegisterUser extends Command<LibraryManager> {
     @Override
     public final void execute() throws DialogException {
         _form.parse();
-        try {
-            //_receiver.registerUser(_name.value(), _mail.value());
-            
-            System.out.println(Message.userRegistrationSuccessful(_receiver.registerUser(_name.value(), _mail.value())));
-        } catch (DuplicateUserException e) {
-            throw new UserAlreadyExistsException();
-        }
+            _display.popup(Message.userRegistrationSuccessful(_receiver.registerUser(_name.value(), _mail.value()))); 
     }
 }

@@ -4,7 +4,7 @@ import pt.tecnico.po.ui.DialogException;
 
 public class FailedToAdvanceDateException extends DialogException {
 
-    private static final long serialVersionUID = 201901101348L;
+    private static final long serialVersionUID = 202001101348L;
       
     @Override
     public String getMessage() {
