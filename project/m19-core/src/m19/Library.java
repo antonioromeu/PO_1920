@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
+import java.util.LinkedList;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -91,24 +94,6 @@ public class Library implements Serializable {
         return _worksCounter++;
     }
 
-    public User getUser(int id) throws NoSuchUserExistsInMapException {
-        User u = _usersMap.get(id);
-        if (u == null) 
-            throw new NoSuchUserExistsInMapException();
-        return _usersMap.get(id);
-    }
-
-    public Map<Integer, User> getAllUsers() {
-        return _usersMap;
-    }
-
-    public Work getWork(int id) {
-        Work w = _worksMap.get(id);
-        if (w != null)
-            return _worksMap.get(id);
-        return null;
-    }
-
     public Map<Integer, Work> getAllWorks() {
         return _worksMap;
     }
@@ -134,34 +119,31 @@ public class Library implements Serializable {
         return _day;
     }
 
-    public String showUser(int id) throws NoSuchUserExistsInMapException {
+    public User getUser(int id) throws NoSuchUserExistsInMapException {
         User user = _usersMap.get(id);
         if (user == null) 
             throw new NoSuchUserExistsInMapException();
-        return user.showUser();
+        return user;
     }
 
-    public String showUsers() {
-        String r = "";
-        for (User u : _usersMap.values()) {
-            r = r + u.showUser() + "\n";
-        }
-        return r;
+    public List<User> getUsers() {
+        List<User> usersList = new LinkedList<User>();
+        usersList.addAll(_usersMap.values());
+        Collections.sort(usersList);
+        return usersList;
     }
 
-    public String showWork(int id) throws NoSuchWorkExistsInMapException {
+    public Work getWork(int id) throws NoSuchWorkExistsInMapException {
         Work work = _worksMap.get(id);
         if (work == null) 
             throw new NoSuchWorkExistsInMapException();
-        return work.showWork();
+        return work;
     }
 
-    public String showWorks() {
-        String r = "";
-        for (Work w : _worksMap.values()) {
-            r = r + w.showWork() + "\n";
-        }
-        return r;
+    public List<Work> getWorks() {
+        List<Work> worksList = new LinkedList<Work>();
+        worksList.addAll(_worksMap.values());
+        return worksList;
     }
 
     public boolean canRequest(Request request) {

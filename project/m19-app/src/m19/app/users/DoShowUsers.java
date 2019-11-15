@@ -1,6 +1,7 @@
 package m19.app.users;
 
 import m19.LibraryManager;
+import m19.User;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 
@@ -12,6 +13,10 @@ public class DoShowUsers extends Command<LibraryManager> {
 
     @Override
     public final void execute() {
-        _display.popup(_receiver.showUsers());
+        String r = "";
+        for (User u : _receiver.getUsers()) {
+            r += u.showUser() + '\n';
+        }
+        _display.popup(r);
     }
 }

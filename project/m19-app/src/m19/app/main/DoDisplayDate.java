@@ -12,7 +12,7 @@ public class DoDisplayDate extends Command<LibraryManager> {
 
     @Override
     public final void execute() {
-        _display.popup(_receiver.getDate());
+        _display.popup(Message.currentDate(_receiver.getDate()));
     }
   
 }

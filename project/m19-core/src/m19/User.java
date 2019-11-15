@@ -1,8 +1,9 @@
 package m19;
 
 import java.io.Serializable;
+import java.lang.Comparable;
 
-public class User implements Serializable {
+public class User implements Serializable, Comparable<User> {
 
     private static final long serialVersionUID = 201608231530L;
 
@@ -19,6 +20,13 @@ public class User implements Serializable {
         _name = name;
         _email = email;
         _active = true;
+    }
+
+    public int compareTo(User user) {
+        if (!this.getName().equals(user.getName())) 
+            return (this.getName().compareTo(user.getName()));
+        else if (this.getID() < user.getID()) return -1;
+        else return 1;
     }
 
     public int getID() {

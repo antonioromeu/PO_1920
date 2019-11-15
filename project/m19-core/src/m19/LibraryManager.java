@@ -9,9 +9,12 @@ import m19.exceptions.NoSuchWorkExistsInMapException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+
+import java.util.List;
 
 public class LibraryManager {
     
@@ -25,6 +28,9 @@ public class LibraryManager {
     }
 
     public void saveAs(String filename) throws IOException {
+        File f = new File(filename);
+        if (f.exists() || f.isDirectory())
+            return; 
         _filename = filename;
         save(_library, _filename);
     }
@@ -68,19 +74,19 @@ public class LibraryManager {
         _library.requestWork(userID, workID);
     }
 
-    public String showUser(int id) throws NoSuchUserExistsInMapException {
-        return _library.showUser(id);
+    public User getUser(int id) throws NoSuchUserExistsInMapException {
+        return _library.getUser(id);
     }
 
-    public String showUsers() {
-        return _library.showUsers();
+    public List<User> getUsers() {
+        return _library.getUsers();
     }
 
-    public String showWork(int id) throws NoSuchWorkExistsInMapException {
-        return _library.showWork(id);
+    public Work getWork(int id) throws NoSuchWorkExistsInMapException {
+        return _library.getWork(id);
     }
 
-    public String showWorks() {
-        return _library.showWorks();
+    public List<Work> getWorks() {
+        return _library.getWorks();
     }
 }

@@ -22,7 +22,7 @@ public class DoDisplayWork extends Command<LibraryManager> {
     public final void execute() throws DialogException {
         _form.parse();
         try {
-            _display.popup(_receiver.showWork(_id.value()));
+            _display.popup(_receiver.getWork(_id.value()).showWork());
         } catch (NoSuchWorkExistsInMapException e) {
             throw new NoSuchWorkException(_id.value());
         }

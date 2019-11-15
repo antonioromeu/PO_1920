@@ -27,6 +27,13 @@ public abstract class Work implements Serializable {
         _copiesTaken = 0;
     }
 
+    public int compareTo(Work work) {
+        if (!this.getTitle().equals(work.getTitle())) 
+            return (this.getTitle().compareTo(work.getTitle()));
+        else if (this.getID() < work.getID()) return -1;
+        else return 1;
+    }
+
     public int getID() {
         return _id;
     }
