@@ -14,6 +14,5 @@ public class NoSuchWorkException extends DialogException {
     @Override
     public String getMessage() {
         return Message.noSuchWork(_id);
-    }
-  
+    } 
 }

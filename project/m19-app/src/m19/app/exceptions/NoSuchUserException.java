@@ -15,5 +15,4 @@ public class NoSuchUserException extends DialogException {
     public String getMessage() {
         return Message.noSuchUser(_id);
     }
-
 }

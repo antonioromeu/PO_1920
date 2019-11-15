@@ -16,6 +16,5 @@ public class WorkNotBorrowedByUserException extends DialogException {
     @Override
     public String getMessage() {
         return Message.workNotBorrowedByUser(_idWork, _idUser);
-    }
-  
+    } 
 }

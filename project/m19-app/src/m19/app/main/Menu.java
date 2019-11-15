@@ -1,6 +1,7 @@
 package m19.app.main;
 
 import m19.LibraryManager;
+
 import pt.tecnico.po.ui.Command;
 
 public class Menu extends pt.tecnico.po.ui.Menu {
@@ -16,5 +17,4 @@ public class Menu extends pt.tecnico.po.ui.Menu {
             new DoOpenRequestsMenu(receiver), //
         });
     }
-
 }

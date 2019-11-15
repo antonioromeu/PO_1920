@@ -1,15 +1,16 @@
 package m19.app.main;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import m19.LibraryManager;
 import m19.exceptions.MissingFileAssociationException;
 import m19.app.exceptions.FileDoesNotExistException;
+
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import pt.tecnico.po.ui.Input;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+ 
 public class DoSave extends Command<LibraryManager> {
   
     Input<String> _filename;
@@ -26,6 +27,8 @@ public class DoSave extends Command<LibraryManager> {
         }
         try {
             _receiver.saveAs(_filename.value());
+        } catch (MissingFileAssociationException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

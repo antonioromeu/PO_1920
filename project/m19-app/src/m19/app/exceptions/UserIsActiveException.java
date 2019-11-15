@@ -14,6 +14,5 @@ public class UserIsActiveException extends DialogException {
     @Override
     public String getMessage() {
         return Message.userNotSuspended(_id);
-    }
-  
+    } 
 }

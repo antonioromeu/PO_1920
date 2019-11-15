@@ -16,6 +16,5 @@ public class UserRegistrationFailedException extends DialogException {
     @Override
     public String getMessage() {
         return Message.userRegistrationFailed(_name, _email);
-    }
-  
+    } 
 }

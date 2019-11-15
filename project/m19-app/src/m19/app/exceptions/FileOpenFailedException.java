@@ -15,5 +15,4 @@ public class FileOpenFailedException extends DialogException {
     public String getMessage() {
         return Message.fileNotFound(_name);
     }
-
 }

@@ -5,17 +5,18 @@ import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+import java.io.IOException;
+import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.regex.Pattern;
 
 public class Library implements Serializable {
 
@@ -32,7 +33,6 @@ public class Library implements Serializable {
         _worksMap = new HashMap<Integer, Work>();
         _usersMap = new HashMap<Integer, User>();
         _requestsMap = new HashMap<Integer, Request>();
-        //_ruleComposite = new RuleComposite();
     }
 
     void importFile(String filename) throws BadEntrySpecificationException, ImportFileException {
@@ -81,10 +81,6 @@ public class Library implements Serializable {
         addUser(user); 
         return id;
     }
-
-    /*public RuleComposite getRuleComposite() {
-        return _ruleComposite;
-    }*/
 
     public int getNewUserID() {
         return _usersCounter++;

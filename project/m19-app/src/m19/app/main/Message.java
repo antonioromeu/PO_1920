@@ -1,15 +1,11 @@
 package m19.app.main;
 
-/** Messages for menu interactions. */
 @SuppressWarnings("nls")
 public interface Message {
 
-  /**
-   * @return string with prompt for filename to open.
-   */
-  static String openFile() {
-    return "Ficheiro a abrir: ";
-  }
+    static String openFile() {
+      return "Ficheiro a abrir: ";
+    }
 
   /**
    * @return string confirming that user wants to save.

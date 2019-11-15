@@ -2,6 +2,7 @@ package m19;
 
 import m19.exceptions.MissingFileAssociationException;
 import m19.exceptions.BadEntrySpecificationException;
+import m19.exceptions.FailedToOpenFileException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
@@ -9,7 +10,6 @@ import m19.exceptions.NoSuchWorkExistsInMapException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,25 +21,32 @@ public class LibraryManager {
     private Library _library = new Library();
     private String _filename = "";
     
-    public void save(Library library, String file) throws IOException {
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-        out.writeObject(library);
-        out.close();
+    public void save() throws MissingFileAssociationException, IOException {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(_filename));
+            out.writeObject(_library);
+            out.close();
+        } catch (FileNotFoundException e) {
+            throw new MissingFileAssociationException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void saveAs(String filename) throws IOException {
-        File f = new File(filename);
-        if (f.exists() || f.isDirectory())
-            return; 
+    public void saveAs(String filename) throws MissingFileAssociationException, IOException {
         _filename = filename;
-        save(_library, _filename);
+        save();
     }
 
-    public Library load(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
-        _library = (Library) in.readObject();  
-        in.close();
-        return _library;
+    public void load(String filename) throws FailedToOpenFileException {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
+            _library = (Library) in.readObject();  
+            _filename = filename;
+            in.close();
+        } catch (ClassNotFoundException | IOException e) {
+            throw new FailedToOpenFileException(filename);
+        } 
     }
     
     public void importFile(String datafile) throws ImportFileException {

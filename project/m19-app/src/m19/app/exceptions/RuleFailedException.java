@@ -31,5 +31,4 @@ public class RuleFailedException extends DialogException {
     public String getMessage() {
         return Message.ruleFailed(_idUser, _idWork, _ruleIndex);
     }
-
 }
