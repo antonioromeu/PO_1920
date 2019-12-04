@@ -1,15 +1,29 @@
 package m19.exceptions;
 
+/**
+  * Class for representing a read error.
+  */
+
 public class ImportFileException extends Exception {
   
+    /** Serial number for serialization. */
     private static final long serialVersionUID = 201901101348L;
 
-    public ImportFileException() {} //Do nothing
+    /**
+    * Default constructor
+    */
+    public ImportFileException() {} 
 
+    /**
+    * @param description
+    */
     public ImportFileException(String description) {
         super(description);
     }
 
+    /**
+    * @param cause 
+    */
     public ImportFileException(Exception cause) {
         super(cause);
     }

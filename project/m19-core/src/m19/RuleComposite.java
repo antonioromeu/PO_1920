@@ -1,9 +1,10 @@
 package m19;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RuleComposite {
-    protected ArrayList<Rule> _rulesList;
+    protected ArrayList<Rule> _rulesList = new ArrayList<Rule>();
 
     public ArrayList<Rule> getRulesList() {
         return _rulesList;
@@ -11,17 +12,13 @@ public class RuleComposite {
 
     public RuleComposite() {
         BorrowedTwiceRule r1 = new BorrowedTwiceRule();
-        ExpensiveWorkRule r2 = new ExpensiveWorkRule();
+        SuspendedUserRule r2 = new SuspendedUserRule();
         NonAvailableRule r3 = new NonAvailableRule();
-        ReferenceWorkRule r4 = new ReferenceWorkRule();
-        SuspendedUserRule r5 = new SuspendedUserRule();
-        WorkNumberRule r6 = new WorkNumberRule();
-        addRule(r1);
-        addRule(r2);
-        addRule(r3);
-        addRule(r4);
-        addRule(r5);
-        addRule(r6);
+        WorkNumberRule r4 = new WorkNumberRule();
+        ReferenceWorkRule r5 = new ReferenceWorkRule();
+        ExpensiveWorkRule r6 = new ExpensiveWorkRule();
+        //Collections.addAll(_rulesList, new BorrowedTwiceRule(), new ExpensiveWorkRule(), new NonAvailableRule(), new ReferenceWorkRule(), new SuspendedUserRule(), new WorkNumberRule());
+        Collections.addAll(_rulesList, r1, r2, r3, r4, r5, r6);        
     }
 
     public void addRule(Rule rule) {

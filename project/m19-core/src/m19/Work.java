@@ -1,16 +1,33 @@
 package m19;
 
 import java.io.Serializable;
+import java.lang.Comparable;
 
-public abstract class Work implements Serializable {
+/**
+  * Class that represents the concept of work.
+  */
 
+public abstract class Work implements Serializable, Comparable<Work> {
+
+    /** Serial number for serialization. */
     private static final long serialVersionUID = 20160823140L;
 
+    /** ID. */
     private int _id;
+    
+     /** Copies. */
     private int _copies;
+
+     /** Copies borrowed by an user. */
     private int _copiesTaken;
+
+     /** Price. */
     private int _price;
+
+     /** Category. */
     private String _category;
+
+     /** Title. */
     private String _title;
 
     public Work(int worksCounter, int copies, int price, String title, String category) {
@@ -62,8 +79,23 @@ public abstract class Work implements Serializable {
         _copies++;
     }
 
+    public void decrementCopies() {
+        _copies--;
+    }
+
+    public void incrementCopiesTaken() {
+        _copiesTaken++;
+    }
+
+    public void decrementCopiesTaken() {
+        _copiesTaken--;
+    }
+
+    /** Represents work as a string. */
     public String showWork() {
         String r = getID() + " - " + (getCopies() - getCopiesTaken()) +  " de " + getCopies() + " -";
         return r;
     }
+
+    public abstract boolean containsTerm(String term);
 }

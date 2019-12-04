@@ -6,6 +6,9 @@ import m19.exceptions.FailedToOpenFileException;
 import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
+import m19.exceptions.FailedToPayFineException;
+import m19.exceptions.RequestFailedException;
+import m19.exceptions.ReturnFailedException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,11 +19,20 @@ import java.io.FileOutputStream;
 
 import java.util.List;
 
+/**
+  * The façade class.
+  */
+
 public class LibraryManager {
     
     private Library _library = new Library();
     private String _filename = "";
     
+
+    /**
+    * @throws MissingFileAssociationException
+    * @throws IOException
+    */
     public void save() throws MissingFileAssociationException, IOException {
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(_filename));
@@ -33,11 +45,20 @@ public class LibraryManager {
         }
     }
 
+    /**
+    * @param filename
+    * @throws MissingFileAssociationException
+    * @throws IOException
+    */
     public void saveAs(String filename) throws MissingFileAssociationException, IOException {
         _filename = filename;
         save();
     }
 
+    /**
+    * @param filename
+    * @throws FailedToOpenFileException
+    */
     public void load(String filename) throws FailedToOpenFileException {
         try {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
@@ -49,6 +70,10 @@ public class LibraryManager {
         } 
     }
     
+    /**
+    * @param datafile
+    * @throws ImportFileException
+    */
     public void importFile(String datafile) throws ImportFileException {
         try {
             _library.importFile(datafile);
@@ -57,18 +82,34 @@ public class LibraryManager {
         }
     }
 
+    /**
+    * Returns the library's associate file name.
+    * 
+    * @return _filename
+    */
     public String getFileName() {
         return _filename;
     }
 
+    /**
+    * @param fields
+    * @throws BadEntrySpecificationException
+    */
     void registerFromFields(String[] fields) throws BadEntrySpecificationException {
         _library.registerFromFields(fields);
     }
 
+    /**
+    * @param name
+    * @param mail 
+    */
     public int registerUser(String name, String mail) {
         return _library.registerUser(name, mail);
     }
 
+    /**
+    * @param days
+    */
     public void advanceDate(int days) {
         _library.advanceDate(days);
     }
@@ -77,10 +118,24 @@ public class LibraryManager {
         return _library.getDate();
     }
 
-    public void requestWork(int userID, int workID) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException {
+    /**
+    * @param userID
+    * @param workID
+    * @throws NoSuchUserExistsInMapException
+    * @throws NoSuchWorkExistsInMapException
+    */
+    public void requestWork(int userID, int workID) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException, RequestFailedException {
         _library.requestWork(userID, workID);
     }
 
+    public void returnWork(int userID, int workID) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException, ReturnFailedException {
+        _library.returnWork(userID, workID);
+    }
+
+    /**
+    * @param id
+    * @throws NoSuchUserExistsInMapException
+    */
     public User getUser(int id) throws NoSuchUserExistsInMapException {
         return _library.getUser(id);
     }
@@ -89,11 +144,31 @@ public class LibraryManager {
         return _library.getUsers();
     }
 
+    /**
+    * @param id
+    * @throws NoSuchWorkExistsInMapException
+    */
     public Work getWork(int id) throws NoSuchWorkExistsInMapException {
         return _library.getWork(id);
     }
 
     public List<Work> getWorks() {
         return _library.getWorks();
+    }
+
+    /**
+    * @param userID
+    * @throws FailedToPayFineException
+    */
+    public void payFine(int userID) throws FailedToPayFineException {
+        _library.payFine(userID);
+    }
+
+    public List<Work> searchWork(String term) throws NoSuchWorkExistsInMapException {
+        return _library.searchWork(term);
+    }
+
+    public String notifyUser(int userId) throws NoSuchUserExistsInMapException {
+        return _library.notifyUser(userId);
     }
 }

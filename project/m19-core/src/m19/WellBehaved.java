@@ -10,6 +10,7 @@ public class WellBehaved extends Behaviour {
 
     @Override
     public void checkLast3() {
+        if (getBehaviourListSize() < 3) return;
         for(int i = getBehaviourListSize() - 1; i >= getBehaviourListSize() - 3; i--) {
             if (getBehaviourFromList(i) != 0) return;
         }

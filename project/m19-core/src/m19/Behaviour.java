@@ -7,8 +7,8 @@ public abstract class Behaviour implements Serializable {
 
     private static final long serialVersionUID = 20160823120L;
 
-    protected User _user; //FAZ SENTIDO?
-    private ArrayList<Integer> _behaviourList; //1 entregou a tempo; 0 falhou entrega
+    protected User _user;
+    private ArrayList<Integer> _behaviourList = new ArrayList<Integer>(); //1 entregou a tempo; 0 falhou entrega
 
     public Behaviour(User user) {
         _user = user;
@@ -20,6 +20,10 @@ public abstract class Behaviour implements Serializable {
 
     public int getBehaviourListSize() {
         return _behaviourList.size();
+    }
+
+    public void addBehaviourToList(int i) {
+        _behaviourList.add(i);
     }
     
     public String status() {

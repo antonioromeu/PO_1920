@@ -1,23 +1,28 @@
 package m19.app.users;
 
 import m19.LibraryManager;
+import m19.exceptions.NoSuchUserExistsInMapException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
-// FIXME import core concepts
-// FIXME import ui concepts
+import pt.tecnico.po.ui.Input;
 
 public class DoShowUserNotifications extends Command<LibraryManager> {
 
-    // FIXME define input fields
+    Input<Integer> _userId;
 
     public DoShowUserNotifications(LibraryManager receiver) {
         super(Label.SHOW_USER_NOTIFICATIONS, receiver);
-        // FIXME initialize input fields
+        _userId = _form.addIntegerInput(Message.requestUserId());
     }
 
     @Override
     public final void execute() throws DialogException {
-        // FIXME implement command
+        _form.parse();
+        try {
+            _display.popup(_receiver.notifyUser(_userId));
+        } catch (NoSuchUserExistsInMapException e) {
+            e.printStackTrace();
+        }
     }
 
 }
