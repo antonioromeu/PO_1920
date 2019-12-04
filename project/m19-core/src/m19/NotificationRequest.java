@@ -8,6 +8,6 @@ public class NotificationRequest extends Notification {
 
     @Override
     public String toString() {
-        return "REQUISIÇÃO:";
+        return "REQUISIÇÃO: ";
     }
 }

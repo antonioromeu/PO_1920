@@ -15,24 +15,43 @@ public class DoRequestWork extends Command<LibraryManager> {
 
     Input<Integer> _workId;
     Input<Integer> _userId; 
+    Input<String> _answer; 
 
     public DoRequestWork(LibraryManager receiver) {
         super(Label.REQUEST_WORK, receiver);
-        _userId = _form.addIntegerInput(Message.requestUserId());
-        _workId = _form.addIntegerInput(Message.requestWorkId());
     }
-
+    
     @Override
     public final void execute() throws DialogException {
+        _form.clear();
+        _userId = _form.addIntegerInput(Message.requestUserId());
+        _workId = _form.addIntegerInput(Message.requestWorkId());
         _form.parse();
         try {
             _receiver.requestWork(_userId.value(), _workId.value());
+            _display.popup(Message.workReturnDay(_workId.value(), _receiver.getRequest(_userId.value(), _workId.value()).getReturnDay()));
         } catch (NoSuchUserExistsInMapException e) {
             throw new NoSuchUserException(_userId.value());
         } catch (NoSuchWorkExistsInMapException e) {
             throw new NoSuchWorkException(_workId.value());
         } catch (RequestFailedException e) {
-            throw new RuleFailedException(_userId.value(), _workId.value(), e.getIndex());
+            if (e.getIndex() == 3) {
+                _form.clear();
+                _answer = _form.addStringInput(Message.requestReturnNotificationPreference());
+                _form.parse();
+                _form.clear();
+                if (_answer.equals("s")) {
+                    try {
+                        _receiver.notifyUser(_userId.value(), _workId.value(), "Request");
+                    } catch (NoSuchUserExistsInMapException e2) {
+                        throw new NoSuchUserException(_userId.value());
+                    } catch (NoSuchWorkExistsInMapException e2) {
+                        throw new NoSuchWorkException(_workId.value());
+                    }
+                }
+            }
+            else
+                throw new RuleFailedException(_userId.value(), _workId.value(), e.getIndex());
         }
     }
 }

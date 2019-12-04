@@ -1,9 +1,13 @@
 package m19;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class RuleComposite {
+public class RuleComposite implements Serializable {
+
+    private static final long serialVersionUID = 2019062831678L;
+
     protected ArrayList<Rule> _rulesList = new ArrayList<Rule>();
 
     public ArrayList<Rule> getRulesList() {

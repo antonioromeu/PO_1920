@@ -8,6 +8,6 @@ public class NotificationReturn extends Notification {
 
     @Override
     public String toString() {
-        return "ENTREGA:";
+        return "ENTREGA: ";
     }
 }

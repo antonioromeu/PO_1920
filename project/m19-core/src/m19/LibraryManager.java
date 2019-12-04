@@ -7,6 +7,7 @@ import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
 import m19.exceptions.FailedToPayFineException;
+import m19.exceptions.FailedToRegisterUserException;
 import m19.exceptions.RequestFailedException;
 import m19.exceptions.ReturnFailedException;
 
@@ -77,7 +78,7 @@ public class LibraryManager {
     public void importFile(String datafile) throws ImportFileException {
         try {
             _library.importFile(datafile);
-        } catch (BadEntrySpecificationException | ImportFileException e) {
+        } catch (FailedToRegisterUserException | BadEntrySpecificationException | ImportFileException e) {
             throw new ImportFileException(datafile);
         }
     }
@@ -95,7 +96,7 @@ public class LibraryManager {
     * @param fields
     * @throws BadEntrySpecificationException
     */
-    void registerFromFields(String[] fields) throws BadEntrySpecificationException {
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException, FailedToRegisterUserException {
         _library.registerFromFields(fields);
     }
 
@@ -103,7 +104,7 @@ public class LibraryManager {
     * @param name
     * @param mail 
     */
-    public int registerUser(String name, String mail) {
+    public int registerUser(String name, String mail) throws FailedToRegisterUserException {
         return _library.registerUser(name, mail);
     }
 
@@ -156,6 +157,10 @@ public class LibraryManager {
         return _library.getWorks();
     }
 
+    public Request getRequest(int userId, int workId) {
+        return _library.getRequest(userId, workId);
+    }
+
     /**
     * @param userID
     * @throws FailedToPayFineException
@@ -168,7 +173,7 @@ public class LibraryManager {
         return _library.searchWork(term);
     }
 
-    public String notifyUser(int userId) throws NoSuchUserExistsInMapException {
-        return _library.notifyUser(userId);
+    public void notifyUser(int userId, int workId, String flag) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException {
+        _library.notifyUser(userId, workId, flag);
     }
 }

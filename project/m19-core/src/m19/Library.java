@@ -5,6 +5,7 @@ import m19.exceptions.ImportFileException;
 import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.exceptions.NoSuchWorkExistsInMapException;
 import m19.exceptions.FailedToPayFineException;
+import m19.exceptions.FailedToRegisterUserException;
 import m19.exceptions.RequestFailedException;
 import m19.exceptions.ReturnFailedException;
 
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import java.io.IOException;
@@ -49,12 +51,12 @@ public class Library implements Serializable {
     private Map<Integer, User> _usersMap;
 
     /** Map of current requests. */
-    private Map<Integer, Request> _requestsMap;
+    private Map<List<Integer>, Request> _requestsMap;
 
     public Library() {
         _worksMap = new HashMap<Integer, Work>();
         _usersMap = new HashMap<Integer, User>();
-        _requestsMap = new HashMap<Integer, Request>();
+        _requestsMap = new HashMap<List<Integer>, Request>();
         _ruleComposite = new RuleComposite();
     }
 
@@ -67,7 +69,7 @@ public class Library implements Serializable {
     * @throws BadEntrySpecificationException
     * @throws ImportFileException
     */
-    void importFile(String filename) throws BadEntrySpecificationException, ImportFileException {
+    void importFile(String filename) throws BadEntrySpecificationException, ImportFileException, FailedToRegisterUserException {
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
@@ -80,7 +82,7 @@ public class Library implements Serializable {
             throw new ImportFileException();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } 
     }
 
     /**
@@ -90,15 +92,13 @@ public class Library implements Serializable {
     *          string input
     * @throws BadEntrySpecificationException
     */
-    void registerFromFields(String[] fields) throws BadEntrySpecificationException {
+    void registerFromFields(String[] fields) throws BadEntrySpecificationException, FailedToRegisterUserException {
         Pattern patWork = Pattern.compile("^(BOOK|DVD)");
         Pattern patUser = Pattern.compile("^(USER)");
-        if (patUser.matcher(fields[0]).matches()) {
-                registerUser(fields[1], fields[2]);
-        }
-        else if (patWork.matcher(fields[0]).matches()) {
+        if (patUser.matcher(fields[0]).matches())
+            registerUser(fields[1], fields[2]);
+        else if (patWork.matcher(fields[0]).matches())
             registerWork(fields);
-        }
         else
             throw new BadEntrySpecificationException(fields[1]);
     }
@@ -129,10 +129,12 @@ public class Library implements Serializable {
     *          users's email
     * @return id
     */
-    public int registerUser(String name, String mail) { 
+    public int registerUser(String name, String email) throws FailedToRegisterUserException { 
+        if (name.equals("") || email.equals(""))
+            throw new FailedToRegisterUserException(name, email);
         int id = getNewUserID();
-        User user = new User(id, name, mail);
-        addUser(user); 
+        User user = new User(id, name, email);
+        addUser(user);
         return id;
     }
 
@@ -308,7 +310,8 @@ public class Library implements Serializable {
     public boolean canRequest(Request request) throws RequestFailedException {
         int i = 1;
         for (Rule rule : _ruleComposite.getRulesList()) {
-            if (!rule.ok(request, _requestsMap)) throw new RequestFailedException(i);
+            if (!rule.ok(request, _requestsMap))
+                throw new RequestFailedException(i);
             i++;
         }
         return true;
@@ -326,18 +329,28 @@ public class Library implements Serializable {
     * @throws NoSuchUserExistsInMapException
     * @throws NoSuchWorkExistsInMapException
     */
-    public void requestWork(int userID, int workID) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException, RequestFailedException {
-        User user = _usersMap.get(userID);
+    public void requestWork(int userId, int workId) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException, RequestFailedException {
+        User user = _usersMap.get(userId);
         if (user == null) 
             throw new NoSuchUserExistsInMapException();
-        Work work = _worksMap.get(workID);
+        Work work = _worksMap.get(workId);
         if (work == null) 
             throw new NoSuchWorkExistsInMapException();
         Request r = new Request(user, work, _day);
-        if (canRequest(r)) {
-            user.incrementWorks();
-            work.incrementCopiesTaken();
-            _requestsMap.put(r.getID(), r);
+        List<Integer> keys = new ArrayList<Integer>();
+        keys.add(user.getID());
+        keys.add(work.getID());
+        try {
+            if (canRequest(r)) {
+                user.incrementWorks();
+                work.incrementCopiesTaken();
+                _requestsMap.put(keys, r);
+                checkWantedWorks(workId, "Request");
+            }
+        } catch (RequestFailedException e) {
+            if (e.getIndex() == 3)
+                user.addWantedWork(work);
+            throw new RequestFailedException(e.getIndex());
         }
     }
 
@@ -348,17 +361,20 @@ public class Library implements Serializable {
         Work work = _worksMap.get(workId);
         if (work == null) 
             throw new NoSuchWorkExistsInMapException();
-        Request r = _requestsMap.get(userId + workId);
+        List<Integer> keys = new ArrayList<Integer>();
+        keys.add(user.getID());
+        keys.add(work.getID());
+        Request r = _requestsMap.get(keys);
         if (r != null) {
             if (r.getReturnDay() >= _day)
                 user.getBehaviour().addBehaviourToList(1);
-            else {
-
+            else
                 user.getBehaviour().addBehaviourToList(0);
-            }
             user.decrementWorks();
             work.decrementCopiesTaken();
-            _requestsMap.remove(r.getID(), r);
+            _requestsMap.remove(keys, r);
+            checkWantedWorks(workId, "Return");
+            updateUsersBehaviours();
         }
         else
             throw new ReturnFailedException();
@@ -370,12 +386,18 @@ public class Library implements Serializable {
     * @return _requestsMap
     *        
     */
-    public Map<Integer, Request> getRequestsMap() {
+    public Map<List<Integer>, Request> getRequestsMap() {
         return _requestsMap;
     }
 
+    public Request getRequest(int userId, int workId) {
+        List<Integer> keys = new ArrayList<Integer>();
+        keys.add(userId);
+        keys.add(workId);
+        return _requestsMap.get(keys);
+    }
+
     public List<Work> searchWork(String term) throws NoSuchWorkExistsInMapException {
-        String r = "";
         List<Integer> keys = new LinkedList<Integer>(_worksMap.keySet());
         List<Work> resultsList = new LinkedList<Work>();
         Collections.sort(keys);
@@ -385,12 +407,27 @@ public class Library implements Serializable {
         return resultsList;
     }
 
-    public String notifyUser(int userId) throws NoSuchUserExistsInMapException {
+    public void notifyUser(int userId, int workId, String flag) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException {
         try {
             User u = getUser(userId);
-            return u.notifyUser();
+            if (flag.equals("Request"))
+                u.registerNotification(new NotificationRequest(u, getWork(workId)));
+            else if (flag.equals("Return"))
+                u.registerNotification(new NotificationReturn(u, getWork(workId)));
         } catch (NoSuchUserExistsInMapException e) {
             throw new NoSuchUserExistsInMapException();
+        } catch (NoSuchWorkExistsInMapException e) {
+            throw new NoSuchWorkExistsInMapException();
         }
+    }
+
+    public void checkWantedWorks(int workId, String flag) {
+        for (User user : _usersMap.values())
+            for (Work work : user.getWantedWorks()) {
+                if (work.getID() == workId && flag.equals("Request"))
+                    user.registerNotification(new NotificationRequest(user, work));
+                else if (work.getID() == workId && flag.equals("Return"))
+                    user.registerNotification(new NotificationReturn(user, work));
+            }
     }
 }

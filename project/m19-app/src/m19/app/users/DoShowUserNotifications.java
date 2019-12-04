@@ -2,6 +2,7 @@ package m19.app.users;
 
 import m19.LibraryManager;
 import m19.exceptions.NoSuchUserExistsInMapException;
+import m19.app.exceptions.NoSuchUserException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import pt.tecnico.po.ui.Input;
@@ -19,9 +20,9 @@ public class DoShowUserNotifications extends Command<LibraryManager> {
     public final void execute() throws DialogException {
         _form.parse();
         try {
-            _display.popup(_receiver.notifyUser(_userId));
+            _display.popup(_receiver.getUser(_userId.value()).showNotifications());
         } catch (NoSuchUserExistsInMapException e) {
-            e.printStackTrace();
+            throw new NoSuchUserException(_userId.value());
         }
     }
 

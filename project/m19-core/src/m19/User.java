@@ -38,6 +38,8 @@ public class User implements Serializable, Comparable<User> {
 
     private List<Notification> _notificationList = new ArrayList<Notification>();
 
+    private List<Work> _worksWanted = new ArrayList<Work>(); 
+
     public User(int usersCounter, String name, String email) {
         _id = usersCounter;
         _name = name;
@@ -48,8 +50,10 @@ public class User implements Serializable, Comparable<User> {
     public int compareTo(User user) {
         if (!this.getName().equals(user.getName())) 
             return (this.getName().compareTo(user.getName()));
-        else if (this.getID() < user.getID()) return -1;
-        else return 1;
+        else if (this.getID() < user.getID())
+            return -1;
+        else
+            return 1;
     }
 
     public int getID() {
@@ -91,6 +95,10 @@ public class User implements Serializable, Comparable<User> {
         return _behaviour;
     }
 
+    public List<Work> getWantedWorks() {
+        return _worksWanted;
+    }
+
     protected void setBehaviour(Behaviour b) {
         _behaviour = b;
     }
@@ -119,15 +127,19 @@ public class User implements Serializable, Comparable<User> {
         _behaviour.checkLast5();
     }
 
-    /*public void status() {
-        System.out.println(_behaviour.status());
-    }*/
+    public void addWantedWork(Work work) {
+        _worksWanted.add(work);
+    }
+
+    public void removeWantedWork(Work work) {
+        _worksWanted.remove(work);
+    }
 
     public void payFine() {
          _fine = 0;
     }
 
-    public boolean hasLateRequests(Map<Integer, Request> requestsMap, int currentDay) {
+    public boolean hasLateRequests(Map<List<Integer>, Request> requestsMap, int currentDay) {
         for (Request r : requestsMap.values()) 
             if (r.getUser().getID() == getID() && r.getReturnDay() < currentDay)
                 return true;
@@ -142,12 +154,11 @@ public class User implements Serializable, Comparable<User> {
         _notificationList.remove(n);
     }
 
-    public String notifyUser() {
+    public String showNotifications() {
         String string = "";
-        for (Notification notification : getNotificationsList()) {
+        for (Notification notification : _notificationList)
             string += notification.toString() + notification.getWork().showWork() + "\n";
-            getNotificationsList().remove(notification);
-        }
+        getNotificationsList().removeAll(getNotificationsList());
         return string;
     }
 
@@ -156,6 +167,7 @@ public class User implements Serializable, Comparable<User> {
         String r = getID() + " - " + getName() + " - " + getEmail() + " - " + getBehaviour().toString() + " - " + toStringActive();
         if (getFine() > 0)
             r = r + " - EUR " + getFine();
+        r += showNotifications();
         return r;
     }
 }
