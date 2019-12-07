@@ -37,6 +37,7 @@ public class LibraryManager {
     public void save() throws MissingFileAssociationException, IOException {
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(_filename));
+            _library.setSaveStatus(true);
             out.writeObject(_library);
             out.close();
         } catch (FileNotFoundException e) {
@@ -69,6 +70,10 @@ public class LibraryManager {
         } catch (ClassNotFoundException | IOException e) {
             throw new FailedToOpenFileException(filename);
         } 
+    }
+
+    public boolean isSaved() {
+        return _library.getSaveStatus();
     }
     
     /**
@@ -165,7 +170,7 @@ public class LibraryManager {
     * @param userID
     * @throws FailedToPayFineException
     */
-    public void payFine(int userID) throws FailedToPayFineException {
+    public void payFine(int userID) throws FailedToPayFineException, NoSuchUserExistsInMapException {
         _library.payFine(userID);
     }
 

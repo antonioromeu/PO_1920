@@ -21,7 +21,6 @@ public class RuleComposite implements Serializable {
         WorkNumberRule r4 = new WorkNumberRule();
         ReferenceWorkRule r5 = new ReferenceWorkRule();
         ExpensiveWorkRule r6 = new ExpensiveWorkRule();
-        //Collections.addAll(_rulesList, new BorrowedTwiceRule(), new ExpensiveWorkRule(), new NonAvailableRule(), new ReferenceWorkRule(), new SuspendedUserRule(), new WorkNumberRule());
         Collections.addAll(_rulesList, r1, r2, r3, r4, r5, r6);        
     }
 

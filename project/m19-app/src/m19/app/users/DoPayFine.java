@@ -2,7 +2,9 @@ package m19.app.users;
 
 import m19.LibraryManager;
 import m19.exceptions.FailedToPayFineException;
+import m19.exceptions.NoSuchUserExistsInMapException;
 import m19.app.exceptions.UserIsActiveException;
+import m19.app.exceptions.NoSuchUserException;
 import pt.tecnico.po.ui.DialogException;
 import pt.tecnico.po.ui.Command;
 import pt.tecnico.po.ui.Input;
@@ -23,6 +25,8 @@ public class DoPayFine extends Command<LibraryManager> {
             _receiver.payFine(_userId.value());
         } catch (FailedToPayFineException e) {
             throw new UserIsActiveException(_userId.value());
+        } catch (NoSuchUserExistsInMapException e) {
+            throw new NoSuchUserException(_userId.value());
         }
     }
 

@@ -10,11 +10,15 @@ public class Request implements Serializable {
     private Work _work;
     private int _requestDay;
     private int _returnDay;
+    private int _fine;
+    private boolean _late;
 
     public Request(User user, Work work, int requestDay) {
         _user = user;
         _work = work;
         _requestDay = requestDay;
+        _fine = 0;
+        _late = false;
     }
 
     public int getReturnDay() {
@@ -59,10 +63,36 @@ public class Request implements Serializable {
         }
         return _returnDay;
     }
+
+    public int getRequestDay() {
+        return _requestDay;
+    }
+
+    public boolean isLate() {
+        return _late;
+    }
+
+    public void setLateness(boolean value) {
+        _late = value;
+    }
+
     public Work getWork() {
         return _work;
     }
+
     public User getUser() {
         return _user;
+    }
+
+    public int getFine() {
+        return _fine;
+    }
+
+    public void incrementFine(int n_days) {
+        _fine += (n_days * 5);
+    }
+
+    public void payFine() {
+        _fine = 0;
     }
 }

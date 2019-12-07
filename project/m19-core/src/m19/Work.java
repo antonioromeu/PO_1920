@@ -47,11 +47,11 @@ public abstract class Work implements Serializable, Comparable<Work> {
     public int compareTo(Work work) {
         if (!this.getTitle().equals(work.getTitle())) 
             return (this.getTitle().compareTo(work.getTitle()));
-        else if (this.getID() < work.getID()) return -1;
+        else if (this.getId() < work.getId()) return -1;
         else return 1;
     }
 
-    public int getID() {
+    public int getId() {
         return _id;
     }
 
@@ -93,7 +93,7 @@ public abstract class Work implements Serializable, Comparable<Work> {
 
     /** Represents work as a string. */
     public String showWork() {
-        String r = getID() + " - " + (getCopies() - getCopiesTaken()) +  " de " + getCopies() + " -";
+        String r = getId() + " - " + (getCopies() - getCopiesTaken()) +  " de " + getCopies() + " -";
         return r;
     }
 

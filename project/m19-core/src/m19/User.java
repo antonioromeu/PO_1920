@@ -1,7 +1,9 @@
 package m19;
 
 import java.io.Serializable;
+
 import java.lang.Comparable;
+
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,25 +17,25 @@ public class User implements Serializable, Comparable<User> {
     /** Serial number for serialization. */
     private static final long serialVersionUID = 201608231530L;
 
-     /** ID. */
+    /** ID. */
     private int _id;
 
-     /** Name. */
+    /** Name. */
     private String _name;
 
-     /** Email. */
+    /** Email. */
     private String _email;
 
-     /** Active. */
+    /** Active. */
     private boolean _active;
 
-     /** Fine. */
+    /** Fine. */
     private int _fine = 0;
 
-     /** Behaviour. */
+    /** Behaviour. */
     private Behaviour _behaviour = new NormalBehaved(this);
 
-     /** Number of works in possession of user. */
+    /** Number of works in possession of user. */
     private int _numberWorks = 0;
 
     private List<Notification> _notificationList = new ArrayList<Notification>();
@@ -50,13 +52,13 @@ public class User implements Serializable, Comparable<User> {
     public int compareTo(User user) {
         if (!this.getName().equals(user.getName())) 
             return (this.getName().compareTo(user.getName()));
-        else if (this.getID() < user.getID())
+        else if (this.getId() < user.getId())
             return -1;
         else
             return 1;
     }
 
-    public int getID() {
+    public int getId() {
         return _id;
     }
 
@@ -67,30 +69,11 @@ public class User implements Serializable, Comparable<User> {
     public String getEmail() {
         return _email;
     }
-
-    public boolean isActive() {
-        return _active;
-    }
-
-    public void setActiveness(boolean b) {
-        _active = b;
-    }
-
-    public String toStringActive() {
-        if (_active) {
-            return "ACTIVO";
-        }
-        else return "SUSPENSO";
-    }
-
+    
     public int getFine() {
         return _fine;
     }
-
-    public void incrementFine(int n_days) {
-        _fine += (n_days * 5);
-    }
-
+    
     public Behaviour getBehaviour() {
         return _behaviour;
     }
@@ -99,24 +82,45 @@ public class User implements Serializable, Comparable<User> {
         return _worksWanted;
     }
 
-    protected void setBehaviour(Behaviour b) {
-        _behaviour = b;
-    }
-
     public int getNumberWorks() {
         return _numberWorks;
     }
 
+    public List<Notification> getNotificationsList() {
+        return _notificationList;
+    }
+
+    public void setActiveness(boolean b) {
+        _active = b;
+    }
+
+    public void setFine(int value) {
+        _fine = value;
+    }
+
+    protected void setBehaviour(Behaviour b) {
+        _behaviour = b;
+    }
+    public boolean isActive() {
+        return _active;
+    }
+
+    public String toStringActive() {
+        if (_active)
+            return "ACTIVO";
+        else return "SUSPENSO";
+    }
+
+    public void incrementFine(int n_days) {
+        _fine += (n_days * 5);
+    }
+    
     public void incrementWorks() {
         _numberWorks++;
     }
 
     public void decrementWorks() {
         _numberWorks--;
-    }
-
-    public List<Notification> getNotificationsList() {
-        return _notificationList;
     }
 
     public void checkLast3() {
@@ -141,7 +145,7 @@ public class User implements Serializable, Comparable<User> {
 
     public boolean hasLateRequests(Map<List<Integer>, Request> requestsMap, int currentDay) {
         for (Request r : requestsMap.values()) 
-            if (r.getUser().getID() == getID() && r.getReturnDay() < currentDay)
+            if (r.getUser().getId() == getId() && r.isLate())
                 return true;
         return false;
     }
@@ -164,8 +168,8 @@ public class User implements Serializable, Comparable<User> {
 
     /** Represents work as a string. */
     public String showUser() {
-        String r = getID() + " - " + getName() + " - " + getEmail() + " - " + getBehaviour().toString() + " - " + toStringActive();
-        if (getFine() > 0)
+        String r = getId() + " - " + getName() + " - " + getEmail() + " - " + getBehaviour().toString() + " - " + toStringActive();
+        if (!isActive())
             r = r + " - EUR " + getFine();
         r += showNotifications();
         return r;

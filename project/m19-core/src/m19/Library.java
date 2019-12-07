@@ -53,6 +53,9 @@ public class Library implements Serializable {
     /** Map of current requests. */
     private Map<List<Integer>, Request> _requestsMap;
 
+    /** Boolean that specifies whether the library is saved or not. */
+    private boolean _saved = false;
+
     public Library() {
         _worksMap = new HashMap<Integer, Work>();
         _usersMap = new HashMap<Integer, User>();
@@ -110,7 +113,7 @@ public class Library implements Serializable {
     *          string input
     */
     public void registerWork(String... fields) {
-        int id = getNewWorkID();
+        int id = getNewWorkId();
         if (fields[0].equals("BOOK")) {
             Book book = new Book(id, fields[1], fields[2], Integer.parseInt(fields[3]), fields[4], fields[5], Integer.parseInt(fields[6]));
             addBook(book);
@@ -132,10 +135,29 @@ public class Library implements Serializable {
     public int registerUser(String name, String email) throws FailedToRegisterUserException { 
         if (name.equals("") || email.equals(""))
             throw new FailedToRegisterUserException(name, email);
-        int id = getNewUserID();
+        int id = getNewUserId();
         User user = new User(id, name, email);
         addUser(user);
         return id;
+    }
+
+    /**
+    * Returns the library status.
+    * 
+    * @return _saved
+    */
+    public boolean getSaveStatus() {
+        return _saved;
+    }
+    
+    /**
+    * Sets the library status.
+    * 
+    * @param value
+    *          boolean value
+    */
+    public void setSaveStatus(boolean value) {
+        _saved = value;
     }
 
     /**
@@ -143,7 +165,7 @@ public class Library implements Serializable {
     * 
     * @return _usersCounter
     */
-    public int getNewUserID() {
+    public int getNewUserId() {
         return _usersCounter++;
     }
 
@@ -152,7 +174,7 @@ public class Library implements Serializable {
     * 
     * @return _worksCounter
     */
-    public int getNewWorkID() {
+    public int getNewWorkId() {
         return _worksCounter++;
     }
 
@@ -169,21 +191,21 @@ public class Library implements Serializable {
     * Adds new user to the library.
     */
     public void addUser(User user) {
-        _usersMap.put(user.getID(), user);
+        _usersMap.put(user.getId(), user);
     } 
 
     /**
     * Adds new book to the library.
     */
     public void addBook(Book book) {
-        _worksMap.put(book.getID(), book);
+        _worksMap.put(book.getId(), book);
     }
 
     /**
     * Adds new dvd to the library.
     */
     public void addDVD(DVD dvd) {
-        _worksMap.put(dvd.getID(), dvd);
+        _worksMap.put(dvd.getId(), dvd);
     }
 
     /**
@@ -194,10 +216,10 @@ public class Library implements Serializable {
     */
     public void advanceDate(int days) {
         if (days > 0) {
+            updateRequestsFine(days);
             _day += days;
             updateUsersBehaviours();
             updateUsersActiveness();
-            updateUsersFine(days);
         }
     }
 
@@ -210,23 +232,39 @@ public class Library implements Serializable {
         return _day;
     }
 
+    /**
+    * Updates the users' behaviours when advancing the date.
+    */
     public void updateUsersBehaviours() {
-        for (User u : _usersMap.values()) {
-            u.checkLast3();
-            u.checkLast5();
+        for (User user : _usersMap.values()) {
+            user.checkLast3();
+            user.checkLast5();
         }
     }
 
-    public void updateUsersFine(int days) {
-        for (User u : _usersMap.values())
-            if (!u.isActive()) 
-                u.incrementFine(days);
+    /**
+    * Updates the fines associated with every request.
+    *
+    * @param days
+    *        days advanced
+    */
+    public void updateRequestsFine(int days) {
+        for (Request request : _requestsMap.values()) {
+            if ((days + getDate()) > request.getReturnDay()) {
+                request.setLateness(true);
+                request.incrementFine((days + getDate()) - request.getReturnDay());
+            }
+        }
     }
 
+    /**
+    * Updates the activeness of every user.
+    */
     public void updateUsersActiveness() {
-        for (Request r : _requestsMap.values())
-            if (r.getReturnDay() < getDate())
-                r.getUser().setActiveness(false);
+        for (Request request : _requestsMap.values())
+            if (request.getReturnDay() < getDate()) {
+                request.getUser().setActiveness(false);
+            }
     }
 
     /**
@@ -234,8 +272,8 @@ public class Library implements Serializable {
     *
     * @return _day
     */
-    public void payFine(int userID) throws FailedToPayFineException {
-        User user =  _usersMap.get(userID);
+    public void payFine(int userID) throws FailedToPayFineException, NoSuchUserExistsInMapException {
+        User user =  getUser(userID);
         if (user.isActive())
             throw new FailedToPayFineException();
         else {
@@ -301,6 +339,22 @@ public class Library implements Serializable {
     }
 
     /**
+    * Returns a request.
+    *
+    * @param userId
+    * 
+    * @param workId
+    *
+    * @return request
+    */
+    public Request getRequest(int userId, int workId) {
+        List<Integer> keys = new ArrayList<Integer>();
+        keys.add(userId);
+        keys.add(workId);
+        return _requestsMap.get(keys);
+    }
+
+    /**
     * Checks if a request is legal.
     *
     * @param request
@@ -338,8 +392,8 @@ public class Library implements Serializable {
             throw new NoSuchWorkExistsInMapException();
         Request r = new Request(user, work, _day);
         List<Integer> keys = new ArrayList<Integer>();
-        keys.add(user.getID());
-        keys.add(work.getID());
+        keys.add(user.getId());
+        keys.add(work.getId());
         try {
             if (canRequest(r)) {
                 user.incrementWorks();
@@ -354,6 +408,19 @@ public class Library implements Serializable {
         }
     }
 
+    /**
+    * Returns work and takes care of the consequences.
+    *
+    * @param userId
+    *        id of the user that creates the request
+    *
+    * @param workId
+    *        id of the work to be requested
+    *
+    * @throws NoSuchUserExistsInMapException
+    * @throws NoSuchWorkExistsInMapException
+    * @throws ReturnFailedException
+    */
     public void returnWork(int userId, int workId) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException, ReturnFailedException {
         User user = _usersMap.get(userId);
         if (user == null) 
@@ -362,17 +429,20 @@ public class Library implements Serializable {
         if (work == null) 
             throw new NoSuchWorkExistsInMapException();
         List<Integer> keys = new ArrayList<Integer>();
-        keys.add(user.getID());
-        keys.add(work.getID());
-        Request r = _requestsMap.get(keys);
-        if (r != null) {
-            if (r.getReturnDay() >= _day)
+        keys.add(user.getId());
+        keys.add(work.getId());
+        Request request = _requestsMap.get(keys);
+        if (request != null) {
+            if (request.getReturnDay() >= getDate())
                 user.getBehaviour().addBehaviourToList(1);
-            else
+            else {
+                user.setFine(user.getFine() + request.getFine());
                 user.getBehaviour().addBehaviourToList(0);
+            }
             user.decrementWorks();
             work.decrementCopiesTaken();
-            _requestsMap.remove(keys, r);
+            request.setLateness(false);
+            _requestsMap.remove(keys, request);
             checkWantedWorks(workId, "Return");
             updateUsersBehaviours();
         }
@@ -383,20 +453,20 @@ public class Library implements Serializable {
     /**
     * Returns the requests' map.
     *
-    * @return _requestsMap
-    *        
+    * @return _requestsMap       
     */
     public Map<List<Integer>, Request> getRequestsMap() {
         return _requestsMap;
     }
 
-    public Request getRequest(int userId, int workId) {
-        List<Integer> keys = new ArrayList<Integer>();
-        keys.add(userId);
-        keys.add(workId);
-        return _requestsMap.get(keys);
-    }
-
+    /**
+    * Returns a list with all the works with the given term.
+    *
+    * @param term
+    *        id of the user that creates the request
+    *
+    * @throws NoSuchWorkExistsInMapException
+    */
     public List<Work> searchWork(String term) throws NoSuchWorkExistsInMapException {
         List<Integer> keys = new LinkedList<Integer>(_worksMap.keySet());
         List<Work> resultsList = new LinkedList<Work>();
@@ -407,13 +477,26 @@ public class Library implements Serializable {
         return resultsList;
     }
 
+    /**
+    * Notifies user according to the flag.
+    *
+    * @param userId
+    *
+    * @param workdId
+    *
+    * @param flag
+    *        "Request" if a notification request is to be added or "Return" if a notification return is to be added.
+    *
+    * @throws NoSuchUserExistsInMapException
+    * @throws NoSuchWorkExistsInMapException
+    */
     public void notifyUser(int userId, int workId, String flag) throws NoSuchUserExistsInMapException, NoSuchWorkExistsInMapException {
         try {
-            User u = getUser(userId);
+            User user = getUser(userId);
             if (flag.equals("Request"))
-                u.registerNotification(new NotificationRequest(u, getWork(workId)));
+                user.registerNotification(new NotificationRequest(user, getWork(workId)));
             else if (flag.equals("Return"))
-                u.registerNotification(new NotificationReturn(u, getWork(workId)));
+                user.registerNotification(new NotificationReturn(user, getWork(workId)));
         } catch (NoSuchUserExistsInMapException e) {
             throw new NoSuchUserExistsInMapException();
         } catch (NoSuchWorkExistsInMapException e) {
@@ -421,12 +504,20 @@ public class Library implements Serializable {
         }
     }
 
+    /**
+    * Checks the users' wanted works and adds notifications accordingly.
+    *
+    * @param workId
+    *
+    * @param flag
+    *        "Request" if a notification request is to be added or "Return" if a notification return is to be added.
+    */
     public void checkWantedWorks(int workId, String flag) {
         for (User user : _usersMap.values())
             for (Work work : user.getWantedWorks()) {
-                if (work.getID() == workId && flag.equals("Request"))
+                if (work.getId() == workId && flag.equals("Request"))
                     user.registerNotification(new NotificationRequest(user, work));
-                else if (work.getID() == workId && flag.equals("Return"))
+                else if (work.getId() == workId && flag.equals("Return"))
                     user.registerNotification(new NotificationReturn(user, work));
             }
     }
