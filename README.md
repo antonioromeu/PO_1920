@@ -13,4 +13,4 @@ Some skeleton code was given by the teachers.
 
 ## Evaluation
 
-15.16
+15.62
