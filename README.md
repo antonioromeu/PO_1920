@@ -1,6 +1,6 @@
 # PO_1920 : Media Library
 
-This project consists on a program for managing the media works in a library.
+A program for managing the media works in a library.
 
 ## Authors
 
