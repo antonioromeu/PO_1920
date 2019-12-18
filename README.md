@@ -10,7 +10,3 @@ A program for managing the media works in a library.
 ## Acknowledgments
 
 Some skeleton code was given by the teachers.  
-
-## Evaluation
-
-15.62
